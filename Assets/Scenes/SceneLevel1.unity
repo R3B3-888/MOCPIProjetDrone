@@ -1072,7 +1072,7 @@ Transform:
   - {fileID: 36798991}
   - {fileID: 557288232}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &238555566 stripped
 Transform:
@@ -2162,7 +2162,7 @@ Transform:
   m_Children:
   - {fileID: 733219741}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &430096796 stripped
 Transform:
@@ -2355,7 +2355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 462354667}
   m_Layer: 0
-  m_Name: Groupe de baigneurs_4
+  m_Name: GroupOfSwimmers_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2368,8 +2368,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462354666}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 745, y: 43, z: 514.28}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 156.7995, y: 35.355434, z: 36.052277}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 786094520}
@@ -2378,8 +2378,8 @@ Transform:
   - {fileID: 238555566}
   - {fileID: 1108797975}
   - {fileID: 107554574}
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_Father: {fileID: 629156834}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &469033322
 GameObject:
@@ -2391,7 +2391,7 @@ GameObject:
   m_Component:
   - component: {fileID: 469033323}
   m_Layer: 0
-  m_Name: Groupe de baigneurs_3
+  m_Name: GroupOfSwimmers_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2404,8 +2404,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 469033322}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 745, y: 43, z: 500}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 156.7995, y: 35.355434, z: 21.772247}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 543450653604093483}
@@ -2414,8 +2414,8 @@ Transform:
   - {fileID: 430096796}
   - {fileID: 1806312369}
   - {fileID: 2022543877}
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_Father: {fileID: 629156834}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &477798151
 PrefabInstance:
@@ -2634,7 +2634,7 @@ Transform:
   - {fileID: 2097290890}
   - {fileID: 1095414915}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &542088941
 PrefabInstance:
@@ -2966,7 +2966,7 @@ GameObject:
   m_Component:
   - component: {fileID: 601821150}
   m_Layer: 0
-  m_Name: Groupe de baigneurs_1
+  m_Name: GroupOfSwimmers_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2979,8 +2979,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 601821149}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 755, y: 43, z: 514.28}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 166.7995, y: 35.355434, z: 36.052277}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 937399904}
@@ -2989,8 +2989,8 @@ Transform:
   - {fileID: 2007557247}
   - {fileID: 1313583149}
   - {fileID: 1488594700}
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_Father: {fileID: 629156834}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &608884188
 PrefabInstance:
@@ -3173,6 +3173,42 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6562300888803697422, guid: e31cca2d3f2522b4ca5458c0f88c8789, type: 3}
   m_PrefabInstance: {fileID: 612187759}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &629156833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 629156834}
+  m_Layer: 0
+  m_Name: Swimmers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &629156834
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629156833}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 588.2005, y: 7.6445656, z: 478.22775}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1434390243}
+  - {fileID: 601821150}
+  - {fileID: 999066274}
+  - {fileID: 469033323}
+  - {fileID: 462354667}
+  - {fileID: 1842608693}
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &634586176
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5323,7 +5359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 999066274}
   m_Layer: 0
-  m_Name: Groupe de baigneurs_2
+  m_Name: GroupOfSwimmers_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5336,8 +5372,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 999066273}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 755, y: 42.5, z: 485.07}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 166.7995, y: 34.855434, z: 6.8422546}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2137256428}
@@ -5346,8 +5382,8 @@ Transform:
   - {fileID: 546677291}
   - {fileID: 1861730024}
   - {fileID: 1515376463}
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_Father: {fileID: 629156834}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &1003659696
 PrefabInstance:
@@ -6164,7 +6200,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1120490786
 PrefabInstance:
@@ -6360,6 +6396,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 8944336655422409496, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
+      propertyPath: field of view
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944336655422409496, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
       propertyPath: far clip plane
       value: 500
       objectReference: {fileID: 0}
@@ -6369,7 +6409,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0024269
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0024269
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0024269
       objectReference: {fileID: 0}
     - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7383,7 +7435,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8320,7 +8372,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1434390243}
   m_Layer: 0
-  m_Name: Groupe de baigneurs_0
+  m_Name: GroupOfSwimmers_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8333,8 +8385,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434390242}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 755, y: 43, z: 500}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 166.7995, y: 35.355434, z: 21.772247}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 989819009}
@@ -8343,8 +8395,8 @@ Transform:
   - {fileID: 683886678}
   - {fileID: 1706770078}
   - {fileID: 1026728554}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_Father: {fileID: 629156834}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &1434744283
 PrefabInstance:
@@ -8624,7 +8676,7 @@ Transform:
   - {fileID: 1603725463}
   - {fileID: 2091228901}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1504069881
 PrefabInstance:
@@ -10208,7 +10260,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8063073397250431797, guid: f0271df749728104eac22c3d897fd8ce, type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8063073397250431797, guid: f0271df749728104eac22c3d897fd8ce, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10886,7 +10938,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1842608693}
   m_Layer: 0
-  m_Name: Groupe de baigneurs_5
+  m_Name: GroupOfSwimmers_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10899,8 +10951,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1842608692}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 745, y: 43, z: 485.07}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 156.7995, y: 35.355434, z: 6.8422546}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 584252611}
@@ -10909,8 +10961,8 @@ Transform:
   - {fileID: 47506599}
   - {fileID: 1416145041}
   - {fileID: 1100237804}
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_Father: {fileID: 629156834}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &1846437914
 PrefabInstance:
@@ -13850,7 +13902,7 @@ GameObject:
   - component: {fileID: 8697510295699049657}
   - component: {fileID: 4908251399762415817}
   m_Layer: 8
-  m_Name: PlayerArmature
+  m_Name: LifeGuard
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14281,7 +14333,7 @@ Transform:
   - {fileID: 1611249826621279917}
   - {fileID: 8833902623797703910}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &5990886980909108352
 GameObject:
