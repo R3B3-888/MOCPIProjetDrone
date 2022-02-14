@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Drone
+namespace Drones
 {
-    [RequireComponent(typeof(Rigidbody))]
-    public class BaseRigibody : MonoBehaviour
+    public class DroneObject : MonoBehaviour
     {
         #region Variables
         
@@ -25,6 +24,11 @@ namespace Drone
 
         #region Custom Methods
         
+        public void Move(Vector3 direction)
+        {
+
+        }
+
         #endregion
     }
 }
