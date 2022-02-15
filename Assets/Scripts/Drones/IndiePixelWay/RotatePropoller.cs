@@ -7,14 +7,14 @@ namespace RotatePropoller
     public class RotatePropoller : MonoBehaviour
     {
         #region Variables
-        // [SerializeField] private Transform propeller;
+        [SerializeField] private Transform propeller;
         [SerializeField] private float _rotationSpeed = 50f;
         #endregion
 
         #region Main Methods
         void Update()
         {
-            // propeller.Rotate(Vector3.up, _rotationSpeed);
+            propeller.Rotate(Vector3.up, _rotationSpeed);
         }
         #endregion
     }
