@@ -6,7 +6,9 @@
         "UnityEditor.TestRunner",
         "Main",
         "BeachObjects",
-        "Drone"
+        "Drones",
+        "IndiePixelWay",
+        "DroneController"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

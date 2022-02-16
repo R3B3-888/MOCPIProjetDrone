@@ -6,7 +6,7 @@
         "UnityEditor.TestRunner",
         "Main",
         "BeachObjects",
-        "Drone"
+        "Drones"
     ],
     "includePlatforms": [
         "Editor"
