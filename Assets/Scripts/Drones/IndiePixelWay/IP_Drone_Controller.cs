@@ -23,6 +23,8 @@ namespace IndiePixelWay
 
         private IP_Drone_Inputs _input;
         private List<IEngine> _engines = new List<IEngine>();
+
+        public float Yaw { get => _yaw; }
         #endregion
 
         #region Main Methods
