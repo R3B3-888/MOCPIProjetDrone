@@ -33,17 +33,19 @@ namespace IndiePixelWay
 
         public void UpdateEngineRealistic()
         {
-
-        }
-        
-        public void UpdateEngine()
-        {
             Vector3 upVec = transform.up;
             upVec.x = 0f;
             upVec.z = 0f;
             float diff = 1 - upVec.magnitude;
             float finalDiff = Physics.gravity.magnitude * diff;
             _engineForce = transform.up * (_forceCompensation + finalDiff + _input.Throttle * _maxPower) / 4f;
+            _rb.AddForce(_engineForce);
+        }
+        
+        public void UpdateEngine()
+        {
+            _engineForce = Vector3.zero;
+            _engineForce = transform.up * ((_rb.mass * Physics.gravity.magnitude) + (_input.Throttle * _maxPower)) / 4f;
             _rb.AddForce(_engineForce);
         }
         #endregion
