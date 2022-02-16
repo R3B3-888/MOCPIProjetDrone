@@ -9,15 +9,33 @@ using UnityEditor;
 public class DroneInputsTests
 {
     private GameObject _dronePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/DroneControllable.prefab");
+    private GameObject _prefabInstance;
+    private Vector3 _pos;
+
+    [SetUp]
+    public void BeforeEveryTest()
+    {
+        _prefabInstance = Object.Instantiate(_dronePrefab, Vector3.zero, Quaternion.identity);
+        _pos = _prefabInstance.transform.position;
+    }
 
     [UnityTest]
-    public IEnumerator _0_Drone_Prefab_OK()
+    public IEnumerator _0_Drone_Prefab_Position()
     {
-        // var droneController = _dronePrefab.GetComponent<IP_Drone_Controller>();
-        var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0,50,0), Quaternion.identity);
-        Assert.IsNotNull(prefabInstance);
+        UnityEngine.Assertions.Assert.AreApproximatelyEqual(0, _pos.x);
+        UnityEngine.Assertions.Assert.AreApproximatelyEqual(0, _pos.y);
+        UnityEngine.Assertions.Assert.AreApproximatelyEqual(0, _pos.z);
         yield return null;
     }
+
+    [UnityTest]
+    public IEnumerator _0_Drone_Prefab_Position_After_1S ()
+    {
+        _pos = Vector3.up;
+        yield return new WaitForSeconds(1f);
+        Assert.AreEqual(Vector3.up, _pos);
+    }
+
 
     [UnityTest]
     public IEnumerator _1_Input_Cyclic_Roll_Left ()

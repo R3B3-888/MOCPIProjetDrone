@@ -4,11 +4,27 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Drones;
+using UnityEditor;
 
 public class DronePlayTests
 {
     const int TIME_FOR_1M = 2;
 
+    private GameObject _dronePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/DroneControllable.prefab");
+    private GameObject _prefabInstance;
+
+    [SetUp]
+    public void BeforeEveryTest()
+    {
+        _prefabInstance = Object.Instantiate(_dronePrefab, Vector3.zero, Quaternion.identity);
+    }
+
+    [UnityTest]
+    public IEnumerator _0_Drone_Prefab_OK()
+    {
+        Assert.IsNotNull(_prefabInstance);
+        yield return null;
+    }
 
     // [UnityTest]
     // public IEnumerator _0_Spawn_At_Position()

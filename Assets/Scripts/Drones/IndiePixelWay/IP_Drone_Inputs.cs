@@ -14,9 +14,9 @@ namespace IndiePixelWay
         private float _pedals;
         private float _throttle;
 
-        public Vector2 Cyclic { get => _cyclic; }
-        public float Pedals { get => _pedals; }
-        public float Throttle { get => _throttle; }
+        public Vector2 Cyclic { get => _cyclic; set => _cyclic = value; }
+        public float Pedals { get => _pedals; set => _pedals = value; }
+        public float Throttle { get => _throttle; set => _throttle = value; }
 
         #endregion
 

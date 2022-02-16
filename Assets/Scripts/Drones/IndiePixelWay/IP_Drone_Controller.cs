@@ -42,14 +42,15 @@ namespace IndiePixelWay
 
         protected virtual void HandleEngines()
         {
+            // rb.AddForce(Vector3.up * (rb.mass * Physics.gravity.magnitude));
             foreach (var engine in _engines)
                 engine.UpdateEngine();
         }
 
         protected virtual void HandleControls()
         {
-            float pitch = -_input.Cyclic.y * _minMaxPitch;
-            float roll = _input.Cyclic.x * _minMaxRoll;
+            float pitch = _input.Cyclic.y * _minMaxPitch;
+            float roll = -_input.Cyclic.x * _minMaxRoll;
             _yaw += _input.Pedals * _yawPower;
 
             _finalPitch = Mathf.Lerp(_finalPitch, pitch, Time.deltaTime * _lerpSpeed);
