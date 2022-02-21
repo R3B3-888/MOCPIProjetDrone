@@ -1,132 +1,123 @@
 using System.Collections;
-using System.Collections.Generic;
+using Drones;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Drones;
-using UnityEditor;
 
-public class DronePlayTests
+namespace Tests.PlayMode
 {
-    const int TIME_FOR_1M = 2;
-
-    private GameObject _dronePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/DroneControllable.prefab");
-    private GameObject _prefabInstance;
-
-    [SetUp]
-    public void BeforeEveryTest()
+    public class DronePlayTests
     {
-        _prefabInstance = Object.Instantiate(_dronePrefab, Vector3.zero, Quaternion.identity);
-    }
+        private readonly GameObject _dronePrefab =
+            UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
 
-    [UnityTest]
-    public IEnumerator _0_Drone_Prefab_OK()
-    {
-        Assert.IsNotNull(_prefabInstance);
-        yield return null;
-    }
+        private GameObject _drone;
+        private DroneController _droneController;
+        private const float TimeFor1M = 1f;
 
-    // [UnityTest]
-    // public IEnumerator _0_Spawn_At_Position()
-    // {
-    //     var gameObject = new GameObject();
-    //     var drone = gameObject.AddComponent<DroneObject>();
-    //     var expectedPos = new Vector3(25, 50, 50);
+        [SetUp]
+        public void SetUp()
+        {
+            _drone = Object.Instantiate(_dronePrefab);
+            _droneController = _drone.GetComponent<DroneController>();
+            _droneController.Awake();
+        }
 
+        [TearDown]
+        public void TearDown()
+        {
+            Object.Destroy(_drone);    
+        }
 
-    //     drone.Spawn(expectedPos);
+        [UnityTest]
+        public IEnumerator _Check_Drone_Is_Instantiate()
+        {
+            Assert.NotNull(_drone);
+            yield return null;
+        }
 
-    //     yield return new WaitForSeconds(TIME_FOR_1M);
+        [UnityTest]
+        public IEnumerator _Dont_Move_With_No_Args()
+        {
+            _droneController.MoveTo(Vector3.zero);
+            yield return new WaitForSeconds(1f);
+            Assert.AreEqual(Vector3.zero, _drone.transform.position);
+        }
 
-    //     Assert.AreEqual(expectedPos, drone.TransformPosition);
-    // }
+        [UnityTest]
+        public IEnumerator _Move_Up_For_1_Meter()
+        {
+            _droneController.MoveTo(Vector3.up);
+        
+            yield return new WaitForSeconds(TimeFor1M);
+        
+            Assert.AreEqual(Vector3.up, _drone.transform.position);
+        }
 
-    [UnityTest]
-    public IEnumerator _1_Stay_In_The_Air()
-    {
-        var gameObject = new GameObject();
-        var drone = gameObject.AddComponent<DroneObject>();
-
-        yield return new WaitForSeconds(5);
-
-        Assert.AreEqual(new Vector3(0, 0, 0), gameObject.transform.position);
-    }
-
-    [UnityTest]
-    public IEnumerator _2_Move_Up()
-    {
-        var gameObject = new GameObject();
-        var drone = gameObject.AddComponent<DroneObject>();
-
-        drone.Move(Vector3.up);
-
-        yield return new WaitForSeconds(TIME_FOR_1M);
-
-        Assert.AreEqual(new Vector3(0, 1, 0), gameObject.transform.position);
-    }
-
-    [UnityTest]
-    public IEnumerator _3_Move_Down()
-    {
-        var gameObject = new GameObject();
-        var drone = gameObject.AddComponent<DroneObject>();
-
-        drone.Move(Vector3.down);
-
-        yield return new WaitForSeconds(TIME_FOR_1M);
-
-        Assert.AreEqual(new Vector3(0, -1, 0), gameObject.transform.position);
-    }
-
-    [UnityTest]
-    public IEnumerator _4_Move_Right()
-    {
-        var gameObject = new GameObject();
-        var drone = gameObject.AddComponent<DroneObject>();
-
-        drone.Move(Vector3.right);
-
-        yield return new WaitForSeconds(TIME_FOR_1M);
-
-        Assert.AreEqual(new Vector3(1, 0, 0), gameObject.transform.position);
-    }
-
-    [UnityTest]
-    public IEnumerator _5_Move_Left()
-    {
-        var gameObject = new GameObject();
-        var drone = gameObject.AddComponent<DroneObject>();
-
-        drone.Move(Vector3.left);
-
-        yield return new WaitForSeconds(TIME_FOR_1M);
-
-        Assert.AreEqual(new Vector3(-1, 0, 0), gameObject.transform.position);
-    }
-
-    [UnityTest]
-    public IEnumerator _6_Move_Forward()
-    {
-        var gameObject = new GameObject();
-        var drone = gameObject.AddComponent<DroneObject>();
-
-        drone.Move(Vector3.forward);
-
-        yield return new WaitForSeconds(TIME_FOR_1M);
-
-        Assert.AreEqual(new Vector3(0, 0, 1), gameObject.transform.position);
-    }
-
-    [UnityTest]
-    public IEnumerator _7_Move_Backward()
-    {
-        var gameObject = new GameObject();
-        var drone = gameObject.AddComponent<DroneObject>();
-
-        drone.Move(Vector3.back);
-
-        yield return new WaitForSeconds(TIME_FOR_1M);
-
-        Assert.AreEqual(new Vector3(0, 0, -1), gameObject.transform.position);
+        //
+        // [UnityTest]
+        // public IEnumerator _3_Move_Down()
+        // {
+        //     var gameObject = new GameObject();
+        //     var drone = gameObject.AddComponent<DroneObject>();
+        //
+        //     drone.Move(Vector3.down);
+        //
+        //     yield return new WaitForSeconds(TIME_FOR_1M);
+        //
+        //     Assert.AreEqual(new Vector3(0, -1, 0), gameObject.transform.position);
+        // }
+        //
+        // [UnityTest]
+        // public IEnumerator _4_Move_Right()
+        // {
+        //     var gameObject = new GameObject();
+        //     var drone = gameObject.AddComponent<DroneObject>();
+        //
+        //     drone.Move(Vector3.right);
+        //
+        //     yield return new WaitForSeconds(TIME_FOR_1M);
+        //
+        //     Assert.AreEqual(new Vector3(1, 0, 0), gameObject.transform.position);
+        // }
+        //
+        // [UnityTest]
+        // public IEnumerator _5_Move_Left()
+        // {
+        //     var gameObject = new GameObject();
+        //     var drone = gameObject.AddComponent<DroneObject>();
+        //
+        //     drone.Move(Vector3.left);
+        //
+        //     yield return new WaitForSeconds(TIME_FOR_1M);
+        //
+        //     Assert.AreEqual(new Vector3(-1, 0, 0), gameObject.transform.position);
+        // }
+        //
+        // [UnityTest]
+        // public IEnumerator _6_Move_Forward()
+        // {
+        //     var gameObject = new GameObject();
+        //     var drone = gameObject.AddComponent<DroneObject>();
+        //
+        //     drone.Move(Vector3.forward);
+        //
+        //     yield return new WaitForSeconds(TIME_FOR_1M);
+        //
+        //     Assert.AreEqual(new Vector3(0, 0, 1), gameObject.transform.position);
+        // }
+        //
+        // [UnityTest]
+        // public IEnumerator _7_Move_Backward()
+        // {
+        //     var gameObject = new GameObject();
+        //     var drone = gameObject.AddComponent<DroneObject>();
+        //
+        //     drone.Move(Vector3.back);
+        //
+        //     yield return new WaitForSeconds(TIME_FOR_1M);
+        //
+        //     Assert.AreEqual(new Vector3(0, 0, -1), gameObject.transform.position);
+        // }
     }
 }
