@@ -27,6 +27,9 @@
 .vscode/*
 .vscode/settings.json
 
+# Rider
+.idea/
+
 # Gradle cache directory
 .gradle/
 

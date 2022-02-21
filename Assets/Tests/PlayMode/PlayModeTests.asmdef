@@ -8,7 +8,7 @@
         "BeachObjects",
         "Drones",
         "IndiePixelWay",
-        "DroneController"
+        "InputHandler"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

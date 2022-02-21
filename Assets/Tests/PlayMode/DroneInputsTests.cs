@@ -11,7 +11,7 @@ public class DroneInputsTests
     private GameObject _dronePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
 
     [UnityTest]
-    public IEnumerator _0_Drone_Prefab_Position()
+    public IEnumerator _Drone_Prefab_Position()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, Vector3.zero, Quaternion.identity);
         Assert.AreEqual(Vector3.zero, prefabInstance.transform.position);
@@ -19,7 +19,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _1_Drone_Prefab_Position_After_1S()
+    public IEnumerator _Drone_Prefab_Position_After_1S()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 10, 0), Quaternion.identity);
         yield return new WaitForSeconds(1f);
@@ -27,7 +27,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _2_Input_Cyclic_Roll_Left()
+    public IEnumerator _Input_Cyclic_Roll_Left()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 20, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Cyclic = new Vector2(-1, 0);
@@ -37,7 +37,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _2_Input_Cyclic_Roll_Right()
+    public IEnumerator _Input_Cyclic_Roll_Right()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 25, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Cyclic = new Vector2(1, 0);
@@ -47,7 +47,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _3_Input_Cyclic_Roll_Side_Effects()
+    public IEnumerator _Input_Cyclic_Roll_Side_Effects()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 30, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Cyclic = new Vector2(1, 0);
@@ -59,7 +59,7 @@ public class DroneInputsTests
 
 
     [UnityTest]
-    public IEnumerator _4_Input_Cyclic_Pitch_Backward()
+    public IEnumerator _Input_Cyclic_Pitch_Backward()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 40, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Cyclic = new Vector2(0, -1);
@@ -69,7 +69,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _4_Input_Cyclic_Pitch_Forward()
+    public IEnumerator _Input_Cyclic_Pitch_Forward()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 45, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Cyclic = new Vector2(0, 1);
@@ -79,7 +79,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _5_Input_Cyclic_Pitch_Side_Effects()
+    public IEnumerator _Input_Cyclic_Pitch_Side_Effects()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 50, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Cyclic = new Vector2(0, 1);
@@ -91,7 +91,7 @@ public class DroneInputsTests
 
 
     [UnityTest]
-    public IEnumerator _6_Input_Pedals_Negative()
+    public IEnumerator _Input_Pedals_Negative()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 60, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Pedals = -1f;
@@ -101,7 +101,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _6_Input_Pedals_Positive()
+    public IEnumerator _Input_Pedals_Positive()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 65, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Pedals = 1f;
@@ -111,7 +111,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _7_Input_Pedals_Side_Effects()
+    public IEnumerator _Input_Pedals_Side_Effects()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(0, 70, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Pedals = 1f;
@@ -124,7 +124,7 @@ public class DroneInputsTests
 
 
     [UnityTest]
-    public IEnumerator _8_Input_Throttle_Negative()
+    public IEnumerator _Input_Throttle_Negative()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(80, 0, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Throttle = -1f;
@@ -134,7 +134,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _8_Input_Throttle_Positive()
+    public IEnumerator _Input_Throttle_Positive()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(85, 0, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Throttle = 1f;
@@ -144,7 +144,7 @@ public class DroneInputsTests
     }
 
     [UnityTest]
-    public IEnumerator _9_Input_Throttle_Side_Effects()
+    public IEnumerator _Input_Throttle_Side_Effects()
     {
         var prefabInstance = Object.Instantiate(_dronePrefab, new Vector3(90, 0, 0), Quaternion.identity);
         prefabInstance.GetComponent<DroneInputs>().Throttle = 1f;

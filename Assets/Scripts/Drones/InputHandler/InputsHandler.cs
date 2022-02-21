@@ -1,54 +1,63 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
 namespace Drones
 {
     [RequireComponent(typeof(DroneInputs))]
-    public class DroneController : BaseRigidbody
+    public class InputsHandler : MonoBehaviour
     {
         #region Variables
-        [Header("Control Properties")]
-        [SerializeField] private float _minMaxPitch = 30f;
+
+        [Header("Control Properties")] [SerializeField]
+        private float _minMaxPitch = 30f;
+
         [SerializeField] private float _minMaxRoll = 30f;
         [SerializeField] private float _yawPower = 3f;
         [SerializeField] private float _lerpSpeed = 2f;
-        
+
         private float _yaw;
         private float _finalPitch;
         private float _finalYaw;
         private float _finalRoll;
-        private float _forceCompensation; 
+        private float _forceCompensation;
 
         private DroneInputs _input;
         private float _maxPower = 4f;
+        private Rigidbody _rb;
 
         #endregion
 
         #region Main Methods
+
+        void Awake()
+        {
+            _rb =  GetComponent<Rigidbody>();
+            _input = GetComponent<DroneInputs>();
+        }
         void Start()
         {
-            _input = GetComponent<DroneInputs>();
-            _forceCompensation = rb.mass * Physics.gravity.magnitude;
+            _forceCompensation = _rb.mass * Physics.gravity.magnitude;
         }
+
         #endregion
 
         #region Custom Methods
-        protected override void HandlePhysics()
+
+        void FixedUpdate()
         {
             HandleEngines();
             HandleControls();
         }
 
-        protected virtual void HandleEngines()
+        private void HandleEngines()
         {
             Vector3 upVec = transform.up;
             upVec.y = 1f;
-            rb.AddForce(upVec * (_forceCompensation + (_input.Throttle * _maxPower)));
+            _rb.AddForce(upVec * (_forceCompensation + (_input.Throttle * _maxPower)));
         }
 
-        protected virtual void HandleControls()
+        private void HandleControls()
         {
             float pitch = _input.Cyclic.y * _minMaxPitch;
             float roll = -_input.Cyclic.x * _minMaxRoll;
@@ -58,8 +67,9 @@ namespace Drones
             _finalYaw = Mathf.Lerp(_finalYaw, _yaw, Time.deltaTime * _lerpSpeed);
             _finalRoll = Mathf.Lerp(_finalRoll, roll, Time.deltaTime * _lerpSpeed);
             Quaternion rotation = Quaternion.Euler(_finalPitch, _finalYaw, _finalRoll);
-            rb.MoveRotation(rotation);
+            _rb.MoveRotation(rotation);
         }
+
         #endregion
     }
 }
