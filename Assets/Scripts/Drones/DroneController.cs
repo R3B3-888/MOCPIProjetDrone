@@ -13,6 +13,7 @@ namespace Drones
         #region Variables
         private DroneInputs _input;
         private Rigidbody _rb;
+        private const float Threshold = .2f;
 
         public Vector3 wantedPosition { get; set; }
         #endregion
@@ -26,12 +27,25 @@ namespace Drones
 
         void FixedUpdate()
         {
-            if (transform.position == wantedPosition)
+            if (transform.position.y > wantedPosition.y)
             {
                 StopMove(); //TODO:Add Drag force on stop moving
-                _rb.drag = 5;
+                _rb.drag = 50;
+                Debug.Log("Set here");
             }
-            Debug.Log("Real pos :" + transform.position + " And wanted :" + wantedPosition);
+            else
+            {
+                // MoveTo(wantedPosition);
+                if ((wantedPosition.y - transform.position.y) > Threshold)
+                {
+                    _input.Throttle = 1;
+                }
+                // else if ((wantedPosition.y - transform.position.y) < Threshold)
+                // {
+                //     _input.Throttle = -1;
+                // }
+            }
+            Debug.Log("Real pos :" + transform.position + " And wanted :" + wantedPosition + " Throttle :" + _input.Throttle);
         }
         #endregion
         

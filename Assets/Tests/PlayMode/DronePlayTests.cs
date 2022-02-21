@@ -51,7 +51,7 @@ namespace Tests.PlayMode
         
             yield return new WaitForSeconds(TimeFor1M);
         
-            Assert.AreEqual(Vector3.up, _drone.transform.position);
+            UnityEngine.Assertions.Assert.AreApproximatelyEqual(1f, _drone.transform.position.y, 0.1f);
         }
 
         //
