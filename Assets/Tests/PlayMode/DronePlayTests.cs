@@ -3,6 +3,7 @@ using Drones;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using static NUnit.Framework.Assert;
 
 namespace Tests.PlayMode
 {
@@ -30,22 +31,22 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator _Check_Drone_Is_Instantiate()
+        public IEnumerator Check_Drone_Is_Instantiate()
         {
-            Assert.NotNull(_drone);
+            NotNull(_drone);
             yield return null;
         }
 
         [UnityTest]
-        public IEnumerator _Dont_Move_With_No_Args()
+        public IEnumerator Dont_Move_With_No_Args()
         {
             _droneController.MoveTo(Vector3.zero);
             yield return new WaitForSeconds(1f);
-            Assert.AreEqual(Vector3.zero, _drone.transform.position);
+            AreEqual(Vector3.zero, _drone.transform.position);
         }
 
         [UnityTest]
-        public IEnumerator _Move_Up_For_1_Meter()
+        public IEnumerator Move_Up_For_1_Meter()
         {
             _droneController.MoveTo(Vector3.up);
         
@@ -54,70 +55,22 @@ namespace Tests.PlayMode
             UnityEngine.Assertions.Assert.AreApproximatelyEqual(1f, _drone.transform.position.y, 0.1f);
         }
 
-        //
-        // [UnityTest]
-        // public IEnumerator _3_Move_Down()
-        // {
-        //     var gameObject = new GameObject();
-        //     var drone = gameObject.AddComponent<DroneObject>();
-        //
-        //     drone.Move(Vector3.down);
-        //
-        //     yield return new WaitForSeconds(TIME_FOR_1M);
-        //
-        //     Assert.AreEqual(new Vector3(0, -1, 0), gameObject.transform.position);
-        // }
-        //
-        // [UnityTest]
-        // public IEnumerator _4_Move_Right()
-        // {
-        //     var gameObject = new GameObject();
-        //     var drone = gameObject.AddComponent<DroneObject>();
-        //
-        //     drone.Move(Vector3.right);
-        //
-        //     yield return new WaitForSeconds(TIME_FOR_1M);
-        //
-        //     Assert.AreEqual(new Vector3(1, 0, 0), gameObject.transform.position);
-        // }
-        //
-        // [UnityTest]
-        // public IEnumerator _5_Move_Left()
-        // {
-        //     var gameObject = new GameObject();
-        //     var drone = gameObject.AddComponent<DroneObject>();
-        //
-        //     drone.Move(Vector3.left);
-        //
-        //     yield return new WaitForSeconds(TIME_FOR_1M);
-        //
-        //     Assert.AreEqual(new Vector3(-1, 0, 0), gameObject.transform.position);
-        // }
-        //
-        // [UnityTest]
-        // public IEnumerator _6_Move_Forward()
-        // {
-        //     var gameObject = new GameObject();
-        //     var drone = gameObject.AddComponent<DroneObject>();
-        //
-        //     drone.Move(Vector3.forward);
-        //
-        //     yield return new WaitForSeconds(TIME_FOR_1M);
-        //
-        //     Assert.AreEqual(new Vector3(0, 0, 1), gameObject.transform.position);
-        // }
-        //
-        // [UnityTest]
-        // public IEnumerator _7_Move_Backward()
-        // {
-        //     var gameObject = new GameObject();
-        //     var drone = gameObject.AddComponent<DroneObject>();
-        //
-        //     drone.Move(Vector3.back);
-        //
-        //     yield return new WaitForSeconds(TIME_FOR_1M);
-        //
-        //     Assert.AreEqual(new Vector3(0, 0, -1), gameObject.transform.position);
-        // }
+        [UnityTest]
+        public IEnumerator PlayTest()
+        {
+            var pos = new Vector3(-1, 2, 3);
+            _droneController.MoveTo(pos);
+            yield return new WaitForSeconds(2f);
+            IsTrue(_droneController.IsAtWantedPosition());
+        }
+
+        [UnityTest]
+        public IEnumerator Yaw()
+        {
+            var angle = Quaternion.Euler(0, 60, 0);
+            _droneController.TurnTo(angle);
+            yield return new WaitForSeconds(3f);
+            AreEqual(60f, _drone.transform.rotation.y);
+        }
     }
 }

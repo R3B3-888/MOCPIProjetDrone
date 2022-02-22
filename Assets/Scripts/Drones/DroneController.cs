@@ -111,5 +111,10 @@ namespace Drones
         {
             return transform.position == wantedPosition;
         }
+
+        public void TurnTo(Quaternion angle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
