@@ -8,7 +8,8 @@ public class DroneControllerTests
         UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
 
     private GameObject _drone;
-    private DroneController _droneController;
+    private static DroneController _droneController;
+    private static DroneInputs _inputs;
 
     [SetUp]
     public void SetUp()
@@ -16,6 +17,7 @@ public class DroneControllerTests
         _drone = Object.Instantiate(_dronePrefab);
         _droneController = _drone.GetComponent<DroneController>();
         _droneController.Awake();
+        _inputs = _drone.GetComponent<DroneInputs>();
     }
 
     [TearDown]
@@ -31,7 +33,9 @@ public class DroneControllerTests
     //     Assert.NotNull(_droneController.Rb);
     //     Assert.NotNull(_droneController.Input);
     // }
-    
+
+    #region Move To Tests
+
     [Test]
     public void _0_Move_To_Set_The_Wanted_Position()
     {
@@ -46,7 +50,7 @@ public class DroneControllerTests
         _droneController.MoveTo(p);
         Assert.AreEqual(p, _droneController.wantedPosition);
     }
-    
+
     [Test]
     public void Move_To_A_Negative_Position_Sets_The_Wanted_Position()
     {
@@ -54,50 +58,74 @@ public class DroneControllerTests
         _droneController.MoveTo(p);
         Assert.AreEqual(p, _droneController.wantedPosition);
     }
-    
+
     [Test]
     public void Stop_Move_Sets_All_Inputs_To_Zeros()
     {
-        var inputs = _drone.GetComponent<DroneInputs>();
         _droneController.StopMove();
-        Assert.AreEqual(Vector2.zero, inputs.Cyclic);
-        Assert.AreEqual(0f, inputs.Pedals);
-        Assert.AreEqual(0f, inputs.Throttle);
+        Assert.AreEqual(Vector2.zero, _inputs.Cyclic);
+        Assert.AreEqual(0f, _inputs.Pedals);
+        Assert.AreEqual(0f, _inputs.Throttle);
     }
 
-    // [Test]
-    // public void _4_Go_Right()
-    // {
-    //     var drone = new Drone();
-    //     var dronePosition = drone.transform.position;
-    //     drone.goDown(10f);
-    //     Assert.AreEqual(dronePosition - 10f, drone.transform.position);
-    // }
+    #endregion
 
-    // [Test]
-    // public void _5_Go_Left()
-    // {
-    //     var drone = new Drone();
-    //     var dronePosition = drone.transform.position;
-    //     drone.goLeft(10f);
-    //     Assert.AreEqual(dronePosition - 10f, drone.transform.position);
-    // }
+    public class GoDirectionMethods //IMPROVE:To refactor if these methods move to a utility class
+    {
+        [Test]
+        public void Go_Up_Set_Throttle_1()
+        {
+            _droneController.GoUp();
+            Assert.AreEqual(1, _inputs.Throttle);
+        }
 
-    // [Test]
-    // public void _6_Turn_On_The_Right()
-    // {
-    //     var drone = new Drone();
-    //     var dronePosition = drone.yaw;
-    //     drone.turnRight(90f);
-    //     Assert.AreEqual(dronePosition + 90f, drone.yaw);
-    // }
+        [Test]
+        public void Go_Down_Set_Throttle_Neg_1()
+        {
+            _droneController.GoDown();
+            Assert.AreEqual(-1, _inputs.Throttle);
+        }
 
-    // [Test]
-    // public void _7_Turn_On_The_Left()
-    // {
-    //     var drone = new Drone();
-    //     var dronePosition = drone.yaw;
-    //     drone.turnLeft(90f);
-    //     Assert.AreEqual(dronePosition - 90f, drone.yaw);
-    // }
+        [Test]
+        public void Go_Right_Set_Cyclic_X_To_1()
+        {
+            _droneController.GoRight();
+            Assert.AreEqual(1, _inputs.Cyclic.x);
+        }
+
+        [Test]
+        public void Go_Left_Set_Cyclic_X_To_Neg_1()
+        {
+            _droneController.GoLeft();
+            Assert.AreEqual(-1, _inputs.Cyclic.x);
+        }
+
+        [Test]
+        public void Go_Forward_Set_Cyclic_Y_To_1()
+        {
+            _droneController.GoForward();
+            Assert.AreEqual(1, _inputs.Cyclic.y);
+        }
+
+        [Test]
+        public void Go_Backward_Set_Cyclic_Y_To_Neg_1()
+        {
+            _droneController.GoBackward();
+            Assert.AreEqual(-1, _inputs.Cyclic.y);
+        }
+
+        [Test]
+        public void Turn_Right_Set_Pedals_To_1()
+        {
+            _droneController.TurnRight();
+            Assert.AreEqual(1, _inputs.Pedals);
+        }
+
+        [Test]
+        public void Turn_Left_Set_Pedals_To_Neg_1()
+        {
+            _droneController.TurnLeft();
+            Assert.AreEqual(-1, _inputs.Pedals);
+        }
+    }
 }

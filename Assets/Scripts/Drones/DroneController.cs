@@ -29,7 +29,7 @@ namespace Drones
         {
             if (transform.position.y > wantedPosition.y)
             {
-                StopMove(); //TODO:Add Drag force on stop moving
+                StopMove(); //TODO:Cancel this Drag force somewhere
                 _rb.drag = 50;
                 Debug.Log("Set here");
             }
@@ -65,15 +65,37 @@ namespace Drones
 
         #region Utilities
 
-        void GoUp() => _input.Throttle = 1f;
+        public void GoUp() => _input.Throttle = 1f;
 
-        void GoDown() => _input.Throttle = -1f;
+        public void GoDown() => _input.Throttle = -1f;
         
-        void GoForward()
+        public void GoForward()
         {
             var c = _input.Cyclic;
             _input.Cyclic = new Vector2(c.x, 1);
         }
+        
+        public void GoBackward()
+        {
+            var c = _input.Cyclic;
+            _input.Cyclic = new Vector2(c.x, -1);
+        }
+
+        public void GoRight()
+        {
+            var c = _input.Cyclic;
+            _input.Cyclic = new Vector2(1, c.y);
+        }
+
+        public void GoLeft()
+        {
+            var c = _input.Cyclic;
+            _input.Cyclic = new Vector2(-1, c.y);
+        }
+
+        public void TurnRight() => _input.Pedals = 1;
+        
+        public void TurnLeft() => _input.Pedals = -1;
 
         #endregion
     }
