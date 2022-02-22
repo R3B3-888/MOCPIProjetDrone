@@ -11,14 +11,17 @@ namespace Drones
     public class DroneController : MonoBehaviour
     {
         #region Variables
+
         private DroneInputs _input;
         private Rigidbody _rb;
         private const float Threshold = .2f;
 
         public Vector3 wantedPosition { get; set; }
+
         #endregion
 
         #region Main Methods
+
         public void Awake()
         {
             _input = GetComponent<DroneInputs>();
@@ -45,11 +48,15 @@ namespace Drones
                 //     _input.Throttle = -1;
                 // }
             }
-            Debug.Log("Real pos :" + transform.position + " And wanted :" + wantedPosition + " Throttle :" + _input.Throttle);
+
+            Debug.Log("Real pos :" + transform.position + " And wanted :" + wantedPosition + " Throttle :" +
+                      _input.Throttle);
         }
+
         #endregion
-        
+
         #region Custom Methods
+
         public void StopMove()
         {
             _input.Cyclic = Vector2.zero;
@@ -61,6 +68,7 @@ namespace Drones
         {
             wantedPosition = pos;
         }
+
         #endregion
 
         #region Utilities
@@ -68,13 +76,13 @@ namespace Drones
         public void GoUp() => _input.Throttle = 1f;
 
         public void GoDown() => _input.Throttle = -1f;
-        
+
         public void GoForward()
         {
             var c = _input.Cyclic;
             _input.Cyclic = new Vector2(c.x, 1);
         }
-        
+
         public void GoBackward()
         {
             var c = _input.Cyclic;
@@ -94,9 +102,14 @@ namespace Drones
         }
 
         public void TurnRight() => _input.Pedals = 1;
-        
+
         public void TurnLeft() => _input.Pedals = -1;
 
         #endregion
+
+        public bool IsAtWantedPosition()
+        {
+            return transform.position == wantedPosition;
+        }
     }
 }

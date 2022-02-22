@@ -70,6 +70,13 @@ public class DroneControllerTests
 
     #endregion
 
+    [Test]
+    public void Test_At_The_Wanted_Position_Without_Any_Displacement()
+    {
+        _droneController.MoveTo(Vector3.zero);
+        Assert.IsTrue(_droneController.IsAtWantedPosition());
+    }
+
     public class GoDirectionMethods //IMPROVE:To refactor if these methods move to a utility class
     {
         [Test]
