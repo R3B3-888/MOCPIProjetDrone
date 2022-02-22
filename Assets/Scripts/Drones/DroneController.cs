@@ -62,5 +62,19 @@ namespace Drones
             wantedPosition = pos;
         }
         #endregion
+
+        #region Utilities
+
+        void GoUp() => _input.Throttle = 1f;
+
+        void GoDown() => _input.Throttle = -1f;
+        
+        void GoForward()
+        {
+            var c = _input.Cyclic;
+            _input.Cyclic = new Vector2(c.x, 1);
+        }
+
+        #endregion
     }
 }
