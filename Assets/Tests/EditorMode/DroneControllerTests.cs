@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class DroneControllerTests
 {
+    #region Variables
+
     private readonly GameObject _dronePrefab =
         UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
 
     private GameObject _drone;
     private static DroneController _droneController;
     private static DroneInputs _inputs;
+
+    #endregion
+
+    #region Setup Teardown
 
     [SetUp]
     public void SetUp()
@@ -26,15 +32,9 @@ public class DroneControllerTests
         Object.DestroyImmediate(_drone);
     }
 
-    // [Test]
-    // public void TestConstruct()
-    // {
-    //     _droneController.Construct();
-    //     Assert.NotNull(_droneController.Rb);
-    //     Assert.NotNull(_droneController.Input);
-    // }
+    #endregion
 
-    #region Move To Tests
+    #region Move To Method
 
     [Test]
     public void _0_Move_To_Set_The_Wanted_Position()
@@ -59,24 +59,18 @@ public class DroneControllerTests
         Assert.AreEqual(p, _droneController.wantedPosition);
     }
 
-    [Test]
-    public void Stop_Move_Sets_All_Inputs_To_Zeros()
-    {
-        _droneController.StopMove();
-        Assert.AreEqual(Vector2.zero, _inputs.Cyclic);
-        Assert.AreEqual(0f, _inputs.Pedals);
-        Assert.AreEqual(0f, _inputs.Throttle);
-    }
-
     #endregion
 
+    #region IsAtWantedPosition Method
 
     [Test]
-    public void Test_At_The_Wanted_Position_Without_Any_Displacement()
+    public void Is_At_The_Wanted_Position_Without_Any_Displacement()
     {
         _droneController.MoveTo(Vector3.zero);
         Assert.IsTrue(_droneController.IsAtWantedPosition());
     }
+
+    #endregion
 
     #region GetDirection Method
 
@@ -111,63 +105,4 @@ public class DroneControllerTests
     }
 
     #endregion
-
-    public class GoDirectionMethods //IMPROVE:To refactor if these methods move to a utility class
-    {
-        [Test]
-        public void Go_Up_Set_Throttle_1()
-        {
-            _droneController.GoUp();
-            Assert.AreEqual(1, _inputs.Throttle);
-        }
-
-        [Test]
-        public void Go_Down_Set_Throttle_Neg_1()
-        {
-            _droneController.GoDown();
-            Assert.AreEqual(-1, _inputs.Throttle);
-        }
-
-        [Test]
-        public void Go_Right_Set_Cyclic_X_To_1()
-        {
-            _droneController.GoRight();
-            Assert.AreEqual(1, _inputs.Cyclic.x);
-        }
-
-        [Test]
-        public void Go_Left_Set_Cyclic_X_To_Neg_1()
-        {
-            _droneController.GoLeft();
-            Assert.AreEqual(-1, _inputs.Cyclic.x);
-        }
-
-        [Test]
-        public void Go_Forward_Set_Cyclic_Y_To_1()
-        {
-            _droneController.GoForward();
-            Assert.AreEqual(1, _inputs.Cyclic.y);
-        }
-
-        [Test]
-        public void Go_Backward_Set_Cyclic_Y_To_Neg_1()
-        {
-            _droneController.GoBackward();
-            Assert.AreEqual(-1, _inputs.Cyclic.y);
-        }
-
-        [Test]
-        public void Turn_Right_Set_Pedals_To_1()
-        {
-            _droneController.TurnRight();
-            Assert.AreEqual(1, _inputs.Pedals);
-        }
-
-        [Test]
-        public void Turn_Left_Set_Pedals_To_Neg_1()
-        {
-            _droneController.TurnLeft();
-            Assert.AreEqual(-1, _inputs.Pedals);
-        }
-    }
 }
