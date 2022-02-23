@@ -28,13 +28,23 @@ namespace Drones
             _rb = GetComponent<Rigidbody>();
         }
 
+        private Vector3 _basePosition;
+
+        private void Start()
+        {
+            _basePosition = transform.position;
+            Debug.Log(_basePosition);
+        }
+
         void FixedUpdate()
         {
             var direction = GetDirection();
-            _input.Cyclic = new Vector2(direction.x, direction.z);
-            _input.Throttle = direction.y;
-            Debug.Log("Real pos :" + transform.position + " And wanted :" + wantedPosition + " Throttle :" +
-                      _input.Throttle);
+
+            var t = Mathf.Lerp(0, 1f, Vector3.Distance(wantedPosition, transform.position)*.2f);
+            _input.Throttle = GetDirection().y*t;
+
+            Debug.Log("Real pos :" + transform.position + " wanted :" + wantedPosition + " Throttle :" +
+                      _input.Throttle + " Direction y: " + direction.y);
         }
 
         #endregion
@@ -59,24 +69,6 @@ namespace Drones
             throw new NotImplementedException();
         }
 
-        public Vector3 GetDirection()
-        {
-            var direction = Vector3.zero;
-            var position = transform.position;
-            direction.x = GetDirectionComponent(wantedPosition.x, position.x);
-            direction.y = GetDirectionComponent(wantedPosition.y, position.y);
-            direction.z = GetDirectionComponent(wantedPosition.z, position.z);
-            return direction;
-        }
-
-        private static int GetDirectionComponent(float wantedComponent, float positionComponent)
-        {
-            var c = 0;
-            if (wantedComponent < positionComponent)
-                c = -1;
-            else if (wantedComponent > positionComponent)
-                c = 1;
-            return c;
-        }
+        public Vector3 GetDirection() => Vector3.Normalize(wantedPosition - transform.position);
     }
 }

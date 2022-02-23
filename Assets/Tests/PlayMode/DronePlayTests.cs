@@ -5,72 +5,86 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 
-namespace Tests.PlayMode
+public class DronePlayTests
 {
-    public class DronePlayTests
+    #region Variables
+
+    private readonly GameObject _dronePrefab =
+        UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
+
+    private GameObject _drone;
+    private DroneController _droneController;
+    private const float TimeFor1M = 1f;
+
+    #endregion
+
+    #region Setup Teardown
+
+    [SetUp]
+    public void SetUp()
     {
-        private readonly GameObject _dronePrefab =
-            UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
+        _drone = Object.Instantiate(_dronePrefab);
+        _droneController = _drone.GetComponent<DroneController>();
+        _droneController.Awake();
+    }
 
-        private GameObject _drone;
-        private DroneController _droneController;
-        private const float TimeFor1M = 1f;
+    [TearDown]
+    public void TearDown()
+    {
+        Object.Destroy(_drone);
+    }
 
-        [SetUp]
-        public void SetUp()
-        {
-            _drone = Object.Instantiate(_dronePrefab);
-            _droneController = _drone.GetComponent<DroneController>();
-            _droneController.Awake();
-        }
+    #endregion
 
-        [TearDown]
-        public void TearDown()
-        {
-            Object.Destroy(_drone);    
-        }
+    #region Instantiate Test
 
-        [UnityTest]
-        public IEnumerator Check_Drone_Is_Instantiate()
-        {
-            NotNull(_drone);
-            yield return null;
-        }
+    [UnityTest]
+    public IEnumerator Check_Drone_Is_Instantiate()
+    {
+        NotNull(_drone);
+        yield return null;
+    }
 
-        [UnityTest]
-        public IEnumerator Dont_Move_With_No_Args()
-        {
-            _droneController.MoveTo(Vector3.zero);
-            yield return new WaitForSeconds(1f);
-            AreEqual(Vector3.zero, _drone.transform.position);
-        }
+    #endregion
 
-        [UnityTest]
-        public IEnumerator Move_Up_For_1_Meter()
-        {
-            _droneController.MoveTo(Vector3.up);
-        
-            yield return new WaitForSeconds(TimeFor1M);
-        
-            UnityEngine.Assertions.Assert.AreApproximatelyEqual(1f, _drone.transform.position.y, 0.1f);
-        }
+    #region Move To Method
 
-        [UnityTest]
-        public IEnumerator PlayTest()
-        {
-            var pos = new Vector3(-1, 2, 3);
-            _droneController.MoveTo(pos);
-            yield return new WaitForSeconds(2f);
-            IsTrue(_droneController.IsAtWantedPosition());
-        }
+    [UnityTest]
+    public IEnumerator Dont_Move_With_No_Args()
+    {
+        _droneController.MoveTo(Vector3.zero);
+        yield return new WaitForSeconds(1f);
+        AreEqual(Vector3.zero, _drone.transform.position);
+    }
 
-        [UnityTest]
-        public IEnumerator Yaw()
-        {
-            var angle = Quaternion.Euler(0, 60, 0);
-            _droneController.TurnTo(angle);
-            yield return new WaitForSeconds(3f);
-            AreEqual(60f, _drone.transform.rotation.y);
-        }
+    [UnityTest]
+    public IEnumerator Move_Up_For_1_Meter()
+    {
+        var pos = new Vector3(0, 1, 0);
+        _droneController.MoveTo(pos);
+        Debug.Log(Vector3.Normalize(_droneController.wantedPosition - _drone.transform.position));
+        yield return new WaitForSeconds(TimeFor1M);
+
+        UnityEngine.Assertions.Assert.AreApproximatelyEqual(1f, _drone.transform.position.y, 0.1f);
+    }
+
+    [UnityTest]
+    public IEnumerator PlayTest()
+    {
+        var pos = new Vector3(-1, 2, 3);
+        _droneController.MoveTo(pos);
+        yield return new WaitForSeconds(2f);
+        IsTrue(_droneController.IsAtWantedPosition());
+    }
+
+    #endregion
+
+    [UnityTest]
+    public IEnumerator Yaw()
+    {
+        var angle = Quaternion.Euler(0, 60, 0);
+        _droneController.TurnTo(angle);
+        yield return new WaitForSeconds(3f);
+        AreEqual(60f, _drone.transform.rotation.y);
     }
 }

@@ -79,29 +79,38 @@ public class DroneControllerTests
     {
         var pos = new Vector3(-6, 3, 0);
         _droneController.MoveTo(pos);
-        var direction = _droneController.GetDirection();
-        Assert.AreEqual(new Vector3(-1, 1, 0), direction);
+        var dir = _droneController.GetDirection();
+        Assert.IsTrue(dir.x < 0);
+        Assert.IsTrue(dir.y > 0);
+        Assert.IsTrue(dir.z == 0);
     }
 
     [Test]
     public void Get_Direction_From_Position_0()
     {
         _droneController.MoveTo(Vector3.zero);
-        Assert.AreEqual(Vector3.zero, _droneController.GetDirection());
+        var dir = _droneController.GetDirection();
+        Assert.AreEqual(Vector3.zero, dir);
     }
 
     [Test]
     public void Get_Direction_From_Neg_Pos()
     {
-        _droneController.MoveTo(new Vector3(-6, -9, -25978));
-        Assert.AreEqual(new Vector3(-1, -1, -1), _droneController.GetDirection());
+        _droneController.MoveTo(new Vector3(-6, -9, -25));
+        var dir = _droneController.GetDirection();
+        Assert.IsTrue(dir.x < 0);
+        Assert.IsTrue(dir.y < 0);
+        Assert.IsTrue(dir.z < 0);
     }
 
     [Test]
     public void Get_Direction_From_Positive_Pos()
     {
         _droneController.MoveTo(new Vector3(85, 9, 27));
-        Assert.AreEqual(Vector3.one, _droneController.GetDirection());
+        var dir = _droneController.GetDirection();
+        Assert.IsTrue(dir.x > 0);
+        Assert.IsTrue(dir.y > 0);
+        Assert.IsTrue(dir.z > 0);
     }
 
     #endregion
