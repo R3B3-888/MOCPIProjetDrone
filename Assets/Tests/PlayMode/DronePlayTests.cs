@@ -60,12 +60,28 @@ public class DronePlayTests
     [UnityTest]
     public IEnumerator Move_Up_For_1_Meter()
     {
-        var pos = new Vector3(0, 1, 0);
-        _droneController.MoveTo(pos);
-        Debug.Log(Vector3.Normalize(_droneController.wantedPosition - _drone.transform.position));
+        _droneController.MoveTo(Vector3.up);
         yield return new WaitForSeconds(TimeFor1M);
+        UnityEngine.Assertions.Assert.AreApproximatelyEqual(1f, _drone.transform.position.y, 
+            DroneController.Threshold);
+    }
 
-        UnityEngine.Assertions.Assert.AreApproximatelyEqual(1f, _drone.transform.position.y, 0.1f);
+    [UnityTest]
+    public IEnumerator Move_Down_For_1_Meter()
+    {
+        _droneController.MoveTo(Vector3.down);
+        yield return new WaitForSeconds(TimeFor1M);
+        UnityEngine.Assertions.Assert.AreApproximatelyEqual(-1f, _drone.transform.position.y,
+            DroneController.Threshold);
+    }
+
+    [UnityTest]
+    public IEnumerator Move_Up_For_20_Meters()
+    {
+        _droneController.MoveTo(new Vector3(0, 20f, 0));
+        yield return new WaitForSeconds(3F);
+        UnityEngine.Assertions.Assert.AreApproximatelyEqual(20f, _drone.transform.position.y,
+            DroneController.Threshold);
     }
 
     [UnityTest]

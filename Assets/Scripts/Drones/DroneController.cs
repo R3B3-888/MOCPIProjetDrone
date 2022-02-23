@@ -14,7 +14,7 @@ namespace Drones
 
         private DroneInputs _input;
         private Rigidbody _rb;
-        private const float Threshold = .2f;
+        public const float Threshold = .1f;
 
         public Vector3 wantedPosition { get; set; }
 
@@ -28,23 +28,28 @@ namespace Drones
             _rb = GetComponent<Rigidbody>();
         }
 
-        private Vector3 _basePosition;
-
-        private void Start()
+        private void Update()
         {
-            _basePosition = transform.position;
-            Debug.Log(_basePosition);
-        }
+            if (IsInRadiusOfWantedPosition())
+            {
+                _rb.drag = 50f;
+                _input.Throttle = 0;
+                if (Mathf.Abs(_rb.velocity.y) <= 0.1f)
+                {
+                    _rb.drag = .5f;
+                }
+                return;
+            }
 
-        void FixedUpdate()
-        {
-            var direction = GetDirection();
+            var dir = GetDirection();
+            _input.Throttle = dir.y;
 
-            var t = Mathf.Lerp(0, 1f, Vector3.Distance(wantedPosition, transform.position)*.2f);
-            _input.Throttle = GetDirection().y*t;
+            // var t = Mathf.Lerp(0, 1f, Vector3.Distance(wantedPosition, transform.position)*.2f);
+            // _input.Throttle = GetDirection().y*t;
 
-            Debug.Log("Real pos :" + transform.position + " wanted :" + wantedPosition + " Throttle :" +
-                      _input.Throttle + " Direction y: " + direction.y);
+            // Debug.Log(
+            //     $"pos {transform.position} wanted : {wantedPosition} Throttle: {_input.Throttle}"
+            //     + $" vel: {_rb.velocity}");
         }
 
         #endregion
@@ -58,11 +63,14 @@ namespace Drones
 
         #endregion
 
-        public bool IsAtWantedPosition()
-        {
-            // In Sphere
-            return transform.position == wantedPosition;
-        }
+        #region Position Checks
+
+        public bool IsAtWantedPosition() => transform.position == wantedPosition;
+
+        public bool IsInRadiusOfWantedPosition(float radiusThreshold = Threshold) =>
+            Vector3.Distance(transform.position, wantedPosition) <= radiusThreshold;
+
+        #endregion
 
         public void TurnTo(Quaternion angle)
         {

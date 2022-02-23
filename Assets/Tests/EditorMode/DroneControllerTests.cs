@@ -1,6 +1,7 @@
 using Drones;
 using NUnit.Framework;
 using UnityEngine;
+using static NUnit.Framework.Assert;
 
 public class DroneControllerTests
 {
@@ -40,7 +41,7 @@ public class DroneControllerTests
     public void _0_Move_To_Set_The_Wanted_Position()
     {
         _droneController.MoveTo(Vector3.zero);
-        Assert.AreEqual(Vector3.zero, _droneController.wantedPosition);
+        AreEqual(Vector3.zero, _droneController.wantedPosition);
     }
 
     [Test]
@@ -48,7 +49,7 @@ public class DroneControllerTests
     {
         var p = new Vector3(1f, 2f, 3f);
         _droneController.MoveTo(p);
-        Assert.AreEqual(p, _droneController.wantedPosition);
+        AreEqual(p, _droneController.wantedPosition);
     }
 
     [Test]
@@ -56,7 +57,7 @@ public class DroneControllerTests
     {
         var p = new Vector3(-100f, -245f, -803f);
         _droneController.MoveTo(p);
-        Assert.AreEqual(p, _droneController.wantedPosition);
+        AreEqual(p, _droneController.wantedPosition);
     }
 
     #endregion
@@ -67,7 +68,27 @@ public class DroneControllerTests
     public void Is_At_The_Wanted_Position_Without_Any_Displacement()
     {
         _droneController.MoveTo(Vector3.zero);
-        Assert.IsTrue(_droneController.IsAtWantedPosition());
+        IsTrue(_droneController.IsAtWantedPosition());
+    }
+
+    [Test]
+    public void Is_In_Radius_of_Wanted_Position_0()
+    {
+        IsTrue(_droneController.IsInRadiusOfWantedPosition());
+    }
+
+    [Test]
+    public void Is_In_Radius_of_Wanted_Position_In_Radius()
+    {
+        _droneController.MoveTo(new Vector3(0.2f, 0, 0.1f));
+        IsTrue(_droneController.IsInRadiusOfWantedPosition());
+    }
+
+    [Test]
+    public void Is_In_Radius_of_Wanted_Position_Not_In_Radius()
+    {
+        _droneController.MoveTo(new Vector3(0.2f, 0, 0.1f));
+        IsFalse(_droneController.IsInRadiusOfWantedPosition(.1f));
     }
 
     #endregion
@@ -80,9 +101,9 @@ public class DroneControllerTests
         var pos = new Vector3(-6, 3, 0);
         _droneController.MoveTo(pos);
         var dir = _droneController.GetDirection();
-        Assert.IsTrue(dir.x < 0);
-        Assert.IsTrue(dir.y > 0);
-        Assert.IsTrue(dir.z == 0);
+        IsTrue(dir.x < 0);
+        IsTrue(dir.y > 0);
+        IsTrue(dir.z == 0);
     }
 
     [Test]
@@ -90,7 +111,7 @@ public class DroneControllerTests
     {
         _droneController.MoveTo(Vector3.zero);
         var dir = _droneController.GetDirection();
-        Assert.AreEqual(Vector3.zero, dir);
+        AreEqual(Vector3.zero, dir);
     }
 
     [Test]
@@ -98,9 +119,9 @@ public class DroneControllerTests
     {
         _droneController.MoveTo(new Vector3(-6, -9, -25));
         var dir = _droneController.GetDirection();
-        Assert.IsTrue(dir.x < 0);
-        Assert.IsTrue(dir.y < 0);
-        Assert.IsTrue(dir.z < 0);
+        IsTrue(dir.x < 0);
+        IsTrue(dir.y < 0);
+        IsTrue(dir.z < 0);
     }
 
     [Test]
@@ -108,9 +129,9 @@ public class DroneControllerTests
     {
         _droneController.MoveTo(new Vector3(85, 9, 27));
         var dir = _droneController.GetDirection();
-        Assert.IsTrue(dir.x > 0);
-        Assert.IsTrue(dir.y > 0);
-        Assert.IsTrue(dir.z > 0);
+        IsTrue(dir.x > 0);
+        IsTrue(dir.y > 0);
+        IsTrue(dir.z > 0);
     }
 
     #endregion
