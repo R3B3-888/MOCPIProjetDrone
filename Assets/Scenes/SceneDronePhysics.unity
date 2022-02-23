@@ -455,16 +455,20 @@ PrefabInstance:
       value: Drone
       objectReference: {fileID: 0}
     - target: {fileID: 6662987874706989723, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
+      propertyPath: _yawPower
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6662987874706989723, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
       propertyPath: _minMaxRoll
-      value: 25
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6662987874706989723, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
       propertyPath: _minMaxPitch
-      value: 25
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7067299701511109469, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
       propertyPath: m_Drag
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}

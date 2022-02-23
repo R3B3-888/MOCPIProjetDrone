@@ -17,6 +17,7 @@ namespace Drones
         [SerializeField] private float _lerpSpeed = 2f;
 
         private float _yaw;
+        public float Yaw { get => _yaw; }
         private float _finalPitch;
         private float _finalYaw;
         private float _finalRoll;

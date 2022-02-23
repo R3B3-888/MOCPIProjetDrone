@@ -62,14 +62,47 @@ public class DroneControllerTests
 
     #endregion
 
-    #region IsAtWantedPosition Method
+    #region Turn To Method
 
     [Test]
-    public void Is_At_The_Wanted_Position_Without_Any_Displacement()
+    public void _0_Turn_To_Set_The_Wanted_Rotation()
     {
-        _droneController.MoveTo(Vector3.zero);
-        IsTrue(_droneController.IsAtWantedPosition());
+        _droneController.TurnTo(0);
+        AreEqual(0, _droneController.wantedRotation);
     }
+
+    [Test]
+    public void Turn_To_An_Angle_Sets_The_Wanted_Rotation()
+    {
+        _droneController.TurnTo(45f);
+        AreEqual(45f, _droneController.wantedRotation);
+    }
+
+    [Test]
+    public void Turn_To_An_Angle_Above_360_Sets_The_Wanted_Rotation()
+    {
+        _droneController.TurnTo(380f);
+        AreEqual(20f, _droneController.wantedRotation);
+    }
+
+    [Test]
+    public void Turn_To_A_Negative_Rotation_Sets_The_Wanted_Rotation()
+    {
+        _droneController.TurnTo(-150f);
+        AreEqual(-150f, _droneController.wantedRotation);
+    }
+
+    [Test]
+    public void Turn_To_An_Angle_Under_Neg_360_Sets_The_Wanted_Rotation()
+    {
+        _droneController.TurnTo(-395f);
+        AreEqual(-35f, _droneController.wantedRotation);
+    }
+
+    #endregion
+
+
+    #region IsInRadius Method
 
     [Test]
     public void Is_In_Radius_of_Wanted_Position_0()
@@ -89,6 +122,17 @@ public class DroneControllerTests
     {
         _droneController.MoveTo(new Vector3(0.2f, 0, 0.1f));
         IsFalse(_droneController.IsInRadiusOfWantedPosition(.1f));
+    }
+
+    #endregion
+
+    #region IsAtWantedRotation Method
+
+    [Test]
+    public void Is_At_The_Wanted_Rotation_0()
+    {
+        _droneController.TurnTo(0);
+        IsTrue(_droneController.IsAtWantedRotation());
     }
 
     #endregion
