@@ -81,7 +81,7 @@ public class DroneControllerTests
     public void Is_In_Radius_of_Wanted_Position_In_Radius()
     {
         _droneController.MoveTo(new Vector3(0.2f, 0, 0.1f));
-        IsTrue(_droneController.IsInRadiusOfWantedPosition());
+        IsTrue(_droneController.IsInRadiusOfWantedPosition(.5f));
     }
 
     [Test]
