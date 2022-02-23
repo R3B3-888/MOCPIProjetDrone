@@ -109,12 +109,32 @@ namespace Drones
 
         public bool IsAtWantedPosition()
         {
-            return transform.position == wantedPosition;
+            return GetDirection() == Vector3.zero;
         }
 
         public void TurnTo(Quaternion angle)
         {
             throw new NotImplementedException();
+        }
+
+        public Vector3 GetDirection()
+        {
+            Vector3 direction = Vector3.zero;
+            var position = transform.position;
+            direction.x = GetDirectionComponent(wantedPosition.x, position.x);
+            direction.y = GetDirectionComponent(wantedPosition.y, position.y);
+            direction.z = GetDirectionComponent(wantedPosition.z, position.z);
+            return direction;
+        }
+
+        private int GetDirectionComponent(float wantedComponent, float positionComponent)
+        {
+            int c = 0;
+            if (wantedComponent < positionComponent)
+                c = -1;
+            else if (wantedComponent > positionComponent)
+                c = 1;
+            return c;
         }
     }
 }

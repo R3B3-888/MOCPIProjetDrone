@@ -70,12 +70,47 @@ public class DroneControllerTests
 
     #endregion
 
+
     [Test]
     public void Test_At_The_Wanted_Position_Without_Any_Displacement()
     {
         _droneController.MoveTo(Vector3.zero);
         Assert.IsTrue(_droneController.IsAtWantedPosition());
     }
+
+    #region GetDirection Method
+
+    [Test]
+    public void Get_Direction_From_A_Position_In_Vector3()
+    {
+        var pos = new Vector3(-6, 3, 0);
+        _droneController.MoveTo(pos);
+        var direction = _droneController.GetDirection();
+        Assert.AreEqual(new Vector3(-1, 1, 0), direction);
+    }
+
+    [Test]
+    public void Get_Direction_From_Position_0()
+    {
+        _droneController.MoveTo(Vector3.zero);
+        Assert.AreEqual(Vector3.zero, _droneController.GetDirection());
+    }
+
+    [Test]
+    public void Get_Direction_From_Neg_Pos()
+    {
+        _droneController.MoveTo(new Vector3(-6, -9, -25978));
+        Assert.AreEqual(new Vector3(-1, -1, -1), _droneController.GetDirection());
+    }
+
+    [Test]
+    public void Get_Direction_From_Positive_Pos()
+    {
+        _droneController.MoveTo(new Vector3(85, 9, 27));
+        Assert.AreEqual(Vector3.one, _droneController.GetDirection());
+    }
+
+    #endregion
 
     public class GoDirectionMethods //IMPROVE:To refactor if these methods move to a utility class
     {
