@@ -402,6 +402,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2263960342889995766, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6599940440549896405, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -449,6 +453,22 @@ PrefabInstance:
     - target: {fileID: 6599940440549896406, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
       propertyPath: m_Name
       value: Drone
+      objectReference: {fileID: 0}
+    - target: {fileID: 6662987874706989723, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
+      propertyPath: _yawPower
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6662987874706989723, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
+      propertyPath: _minMaxRoll
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6662987874706989723, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
+      propertyPath: _minMaxPitch
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7067299701511109469, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
+      propertyPath: m_Drag
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 248f32af1d5d461449c4e96dc31db17a, type: 3}
