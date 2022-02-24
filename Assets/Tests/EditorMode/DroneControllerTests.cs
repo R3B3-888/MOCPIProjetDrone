@@ -134,6 +134,13 @@ public class DroneControllerTests
         _droneController.TurnTo(0);
         IsTrue(_droneController.IsAtWantedRotation());
     }
+    
+    [Test]
+    public void Is_Not_At_Unwanted_Rotation()
+    {
+        _droneController.TurnTo(40);
+        IsFalse(_droneController.IsAtWantedRotation());
+    }
 
     #endregion
 

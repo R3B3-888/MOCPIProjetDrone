@@ -146,9 +146,29 @@ public class DronePlayTests
     public IEnumerator Turn_Right_To_Angle_45()
     {
         _droneController.TurnTo(45);
-        yield return new WaitForSeconds(TimeFor1M);
-        // yield return new WaitUntil(() => _droneController.IsAtWantedRotation());
-        AreEqual(45f, _drone.transform.rotation.y);
+        // yield return new WaitForSeconds(TimeFor1M * 3f);
+        yield return new WaitUntil(() => _droneController.IsAtWantedRotation());
+        AreEqual(45f, _drone.GetComponent<InputsHandler>().Yaw);
+    }
+
+    [UnityTest]
+    public IEnumerator Turn_Left_To_Neg_90()
+    {
+        _droneController.TurnTo(-90);
+        yield return new WaitUntil(() => _droneController.IsAtWantedRotation());
+        AreEqual(-90f, _drone.GetComponent<InputsHandler>().Yaw);
+        // AreEqual(new Vector3(0,360f-90f, 0), _drone.transform.eulerAngles);
+    }
+    
+    [UnityTest]
+    public IEnumerator Turn_Right_To_Angle_47_From_Neg_118()
+    {
+        _droneController.TurnTo(-118);
+        yield return new WaitUntil(() => _droneController.IsAtWantedRotation());
+        _droneController.TurnTo(47);
+        yield return new WaitUntil(() => _droneController.IsAtWantedRotation());
+        AreEqual(47f, _drone.GetComponent<InputsHandler>().Yaw);
+        // AreEqual(new Vector3(0,47,0), _drone.transform.eulerAngles);
     }
 
     #endregion

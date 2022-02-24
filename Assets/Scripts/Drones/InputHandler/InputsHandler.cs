@@ -13,18 +13,18 @@ namespace Drones
         private float _minMaxPitch = 30f;
 
         [SerializeField] private float _minMaxRoll = 30f;
-        [SerializeField] private float _yawPower = 3f;
-        [SerializeField] private float _lerpSpeed = 2f;
+        private readonly float _yawPower = 1f;
+        private readonly float _throttlePower = 4f;
+        private readonly float _lerpSpeed = 5f;
 
         private float _yaw;
-        public float Yaw { get => _yaw; }
         private float _finalPitch;
         private float _finalYaw;
+        public float Yaw { get => _yaw; }
         private float _finalRoll;
         private float _forceCompensation;
 
         private DroneInputs _input;
-        private float _maxPower = 4f;
         private Rigidbody _rb;
 
         #endregion
@@ -55,7 +55,7 @@ namespace Drones
         {
             Vector3 upVec = transform.up;
             upVec.y = 1f;
-            _rb.AddForce(upVec * (_forceCompensation + (_input.Throttle * _maxPower)));
+            _rb.AddForce(upVec * (_forceCompensation + (_input.Throttle * _throttlePower)));
         }
 
         private void HandleControls()

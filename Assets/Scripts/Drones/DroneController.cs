@@ -15,10 +15,11 @@ namespace Drones
         private DroneInputs _input;
         private Rigidbody _rb;
         private InputsHandler _inputsHandler;
+        
         public const float Threshold = .2f;
 
-        public Vector3 wantedPosition { get; set; }
-        public float wantedRotation { get; set; }
+        public Vector3 wantedPosition { get; private set; }
+        public float wantedRotation { get; private set; }
 
         #endregion
 
@@ -33,18 +34,23 @@ namespace Drones
 
         private void Update()
         {
-            
+            if (IsAtWantedRotation())
+                _input.Pedals = 0;
+            else
+                _input.Pedals = wantedRotation > _inputsHandler.Yaw ? 1 : -1;
+
+
             if (IsInRadiusOfWantedPosition())
             {
                 _input.Throttle = 0;
                 _input.Cyclic = Vector2.zero;
-                return;
             }
-
-            var dir = GetDirection();
-            _input.Throttle = dir.y;
-            _input.Cyclic = new Vector2(dir.x, dir.z);
-
+            else
+            {
+                var dir = GetDirection();
+                _input.Throttle = dir.y;
+                _input.Cyclic = new Vector2(dir.x, dir.z);
+            }
             // var t = Mathf.Lerp(0, 1f, Vector3.Distance(wantedPosition, transform.position)*.2f);
             // _input.Throttle = GetDirection().y*t;
 
@@ -55,7 +61,7 @@ namespace Drones
 
         #endregion
 
-        #region Custom Methods
+        #region Move & Turn Methods
 
         public void MoveTo(Vector3 pos) => wantedPosition = pos;
 
