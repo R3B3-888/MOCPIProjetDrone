@@ -30,6 +30,7 @@ namespace Drones
             _input = GetComponent<DroneInputs>();
             _rb = GetComponent<Rigidbody>();
             _inputsHandler = GetComponent<InputsHandler>();
+            wantedPosition = this.transform.position;
         }
 
         private void Update()
