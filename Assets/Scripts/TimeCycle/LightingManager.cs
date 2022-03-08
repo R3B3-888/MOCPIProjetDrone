@@ -50,7 +50,7 @@ namespace TimeCycle
             RenderSettings.ambientLight = _preset.ambientColor.Evaluate(timePercent);
             RenderSettings.fogColor = _preset.fogColor.Evaluate(timePercent);
 
-            //If the directional light is set then rotate and set it's color, I actually rarely use the rotation because it casts tall shadows unless you clamp the value
+            //If the directional light is set then rotate and set it's color
             if (_directionalLight == null) return;
             _directionalLight.color = _preset.directionalColor.Evaluate(timePercent);
 
