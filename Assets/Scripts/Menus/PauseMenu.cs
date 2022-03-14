@@ -6,18 +6,22 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenu;
-    public bool isPaused;
+    public static bool paused;
 
     void Start()
     {
+        paused = false;
         pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            if(isPaused)
+            if(paused)
             {
                 ResumeGame();
             }
@@ -30,29 +34,25 @@ public class PauseMenu : MonoBehaviour
 
     public void ResumeGame()
     {
+        paused = false;
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        isPaused = false;
     }
 
     public void PauseGame()
     {
+        paused = true;
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        isPaused = true;
-    }
-
-    public void Home()
-    {
-        // to code
     }
 
     public void GoToMainMenu()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
 

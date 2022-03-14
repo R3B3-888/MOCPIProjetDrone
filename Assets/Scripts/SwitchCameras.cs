@@ -3,41 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInput))]
 public class SwitchCameras : MonoBehaviour
 {
-    public PlayerInput input;
+    public Dictionary<string, GameObject> Cameras = new Dictionary<string, GameObject>();
 
     public GameObject mainCamera;
-    public GameObject houseBeachCamera;
-    public GameObject boatCamera;
+    public GameObject previousCamera;
+    public GameObject droneCamera;
 
-    public bool isBeachCameraOn;
 
     // Start is called before the first frame update
     void Start()
     {
-        input = GetComponent<PlayerInput>();
-        isBeachCameraOn = false;
+        Cameras.Add("playerCamera", mainCamera);
+        Cameras.Add("houseBeachCamera", previousCamera);
+        Cameras.Add("DroneCamera", droneCamera);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(input.actions["houseBeach"].triggered)
-        {
-            if(isBeachCameraOn)
-            {
-                mainCamera.SetActive(true);
-                houseBeachCamera.SetActive(false);
-                isBeachCameraOn = false;
-            }
-            else
-            {
-                mainCamera.SetActive(false);
-                houseBeachCamera.SetActive(true);
-                isBeachCameraOn = true;
-            }
-        }
+        showCamera();
+    }
+
+    public void showCamera()
+    {
+        previousCamera.SetActive(false);
+        mainCamera.SetActive(true);
+    }
+
+    public void showPlayerCamera()
+    {
+        previousCamera = mainCamera;
+        mainCamera = Cameras["playerCamera"];
+    }
+
+    public void showHouseBeachCamera()
+    {
+        previousCamera = mainCamera;
+        mainCamera = Cameras["houseBeachCamera"];
+    }
+
+    public void showDroneCamera()
+    {
+        previousCamera = mainCamera;
+        mainCamera = Cameras["DroneCamera"];
     }
 }
