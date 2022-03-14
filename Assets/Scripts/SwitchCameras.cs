@@ -7,17 +7,23 @@ public class SwitchCameras : MonoBehaviour
 {
     public Dictionary<string, GameObject> Cameras = new Dictionary<string, GameObject>();
 
-    public GameObject mainCamera;
-    public GameObject previousCamera;
+    private string mainCamera;
+    private string previousCamera;
+
+    public GameObject playerCamera;
+    public GameObject houseBeachCamera;
     public GameObject droneCamera;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        Cameras.Add("playerCamera", mainCamera);
-        Cameras.Add("houseBeachCamera", previousCamera);
+        Cameras.Add("playerCamera", playerCamera);
+        Cameras.Add("houseBeachCamera", houseBeachCamera);
         Cameras.Add("DroneCamera", droneCamera);
+
+        mainCamera = "playerCamera";
+        previousCamera = "playerCamera";
     }
 
     // Update is called once per frame
@@ -28,25 +34,34 @@ public class SwitchCameras : MonoBehaviour
 
     public void showCamera()
     {
-        previousCamera.SetActive(false);
-        mainCamera.SetActive(true);
+        Cameras[previousCamera].SetActive(false);
+        Cameras[mainCamera].SetActive(true);
     }
 
     public void showPlayerCamera()
     {
-        previousCamera = mainCamera;
-        mainCamera = Cameras["playerCamera"];
+        if(previousCamera != "playerCamera")
+        {
+            previousCamera = mainCamera;
+            mainCamera = "playerCamera";
+        }
     }
 
     public void showHouseBeachCamera()
     {
-        previousCamera = mainCamera;
-        mainCamera = Cameras["houseBeachCamera"];
+        if(previousCamera != "houseBeachCamera")
+        {
+            previousCamera = mainCamera;
+            mainCamera = "houseBeachCamera";
+        }
     }
 
     public void showDroneCamera()
     {
-        previousCamera = mainCamera;
-        mainCamera = Cameras["DroneCamera"];
+        if(previousCamera != "DroneCamera")
+        {
+            previousCamera = mainCamera;
+            mainCamera = "DroneCamera";
+        }
     }
 }
