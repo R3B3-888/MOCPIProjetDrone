@@ -1,33 +1,60 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Swarm;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Assert = UnityEngine.Assertions.Assert;
+using static NUnit.Framework.Assert;
+using Object = UnityEngine.Object;
 
 namespace Tests.PlayMode
 {
     public class SwarmTests
     {
-        // A UnityTest behaves like a coroutine in PlayMode
-        // and allows you to yield null to skip a frame in EditMode
-        [UnityTest]
-        public IEnumerator _5_Drones_Spawned_By_SwarmManager()
+        private readonly GameObject _dronePrefab =
+            AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
+
+        private SwarmManager _swarm;
+        private const int NumberOfDrone = 3;
+        private GameObject _go;
+
+        [SetUp]
+        public void SetUp()
         {
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
-            var go = new GameObject();
-            var swarm = go.AddComponent(typeof(SwarmManager)) as SwarmManager;
-            const int numberOfDrone = 5;
-            swarm.SwarmManagerConstructor(prefab, numberOfDrone);
-            yield return new WaitForFixedUpdate();
-            Assert.AreEqual(swarm.transform.childCount, numberOfDrone);
+            _go = new GameObject();
+            _swarm = _go.AddComponent(typeof(SwarmManager)) as SwarmManager;
+            if (_swarm != null) _swarm.SwarmManagerConstructor(_dronePrefab, NumberOfDrone);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            Object.Destroy(_swarm);
+            Object.Destroy(_go);
         }
 
         [UnityTest]
-        public IEnumerator Swarm()
+        public IEnumerator _5_Drones_Spawned_By_SwarmManager()
         {
-            yield return null;
+            _swarm.SwarmManagerConstructor(_dronePrefab, 5);
+            yield return new WaitForFixedUpdate();
+            AreEqual(_swarm.transform.childCount, NumberOfDrone);
+        }
+
+        [UnityTest]
+        public IEnumerator Swarm_Doing_State_TakeOff()
+        {
+            var dronesElevation = _swarm.Drones.Select(drone => drone.transform.position.y).ToList();
+            yield return new WaitForSeconds(1);
+            var dronesElevationAtSpawn = _swarm.Drones.Select(drone => drone.transform.position.y).ToList();
+            AreEqual(GameState.TakeOff, _swarm.State);
+            foreach (var nw in dronesElevationAtSpawn.Zip(dronesElevation, Tuple.Create)) 
+            {
+                Greater(nw.Item1, nw.Item2);
+            } 
         }
     }
 }

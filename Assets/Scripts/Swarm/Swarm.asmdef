@@ -2,7 +2,8 @@
     "name": "Swarm",
     "rootNamespace": "",
     "references": [
-        "GUID:7661c819bc9916e469e6e7428d98146f"
+        "GUID:7661c819bc9916e469e6e7428d98146f",
+        "GUID:853c267b6374df74c96a63aca63645b6"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

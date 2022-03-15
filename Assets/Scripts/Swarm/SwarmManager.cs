@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor;
+using System.Linq;
+using Drones;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Swarm
@@ -12,9 +14,12 @@ namespace Swarm
         [SerializeField] private GameObject _dronePrefab;
         [SerializeField] private int _numberOfDrone;
 
-        private List<GameObject> _drones = new List<GameObject>();
+        [SerializeField, Range(2, 20)] private int _startingElevation = 10;
+        private readonly List<GameObject> _drones = new List<GameObject>();
 
+        public List<GameObject> Drones => _drones;
         public GameState State { get; private set; }
+        
 
         #endregion
 
@@ -43,6 +48,7 @@ namespace Swarm
                     HandleSpawningDrones();
                     break;
                 case GameState.TakeOff:
+                    HandleTakeOff();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -70,6 +76,29 @@ namespace Swarm
                 drone.name = $"Drone {i}";
                 _drones.Add(drone);
             }
+        }
+
+        private void HandleTakeOff()
+        {
+            TakeOffDrones(elevation: _startingElevation);
+            if (AllDronesAreAtWantedPosition())
+                ChangeState(GameState.OnTheWayIn);
+        }
+
+        private void TakeOffDrones(int elevation)
+        {
+            foreach (var drone in _drones)
+            {
+                var controller = drone.GetComponent<DroneController>();
+                var pos = drone.transform.position;
+                pos.y += elevation;
+                controller.MoveTo(pos);
+            }
+        }
+
+        private bool AllDronesAreAtWantedPosition()
+        {
+            return _drones.All(drone => drone.GetComponent<DroneController>().IsInRadiusOfWantedPosition());
         }
     }
 }
