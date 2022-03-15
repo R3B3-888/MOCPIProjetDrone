@@ -11,6 +11,13 @@ public class Group : MonoBehaviour
     public int startingCount = 20;
     const float AgentDensity = 0.9f;
 
+    [Range(0, 5)]
+    public int willDrownAgent = 0;
+
+    List<GroupAgent> nonDrowningAgents;
+    private int drowningAgent = 0;
+
+
     GroupAgent spawnInSemiCircle()
     {
         GroupAgent newAgent;
@@ -37,15 +44,41 @@ public class Group : MonoBehaviour
             newAgent.Initialize(this);
             agents.Add(newAgent);
         }
+        nonDrowningAgents = new List<GroupAgent>(agents);
     }
 
     // Update is called once per frame
     // Update is called once per frame
     void Update()
     {
-        foreach (GroupAgent agent in agents)
+        int nonDrowningSwimmers = startingCount - drowningAgent;
+        if( nonDrowningSwimmers > 0)
         {
-            // chance to drown
+            if(willDrownAgent > 0 && willDrownAgent <= nonDrowningSwimmers)
+            {
+                int rand = 0;
+                for(int i = 0; i < willDrownAgent; i++)
+                {
+                    rand = (int) Random.Range(0f, nonDrowningSwimmers * 1f);
+                    Drown(rand);
+                }
+                willDrownAgent = 0;
+            }
         }
+    }
+
+    public void Drown(int val)
+    {
+        if(val < nonDrowningAgents.Count)
+        {
+            nonDrowningAgents[val].drown();
+            nonDrowningAgents.RemoveAt(val);
+        }
+    }
+
+    public void Rescue(GroupAgent agent)
+    {
+        agent.rescue();
+        nonDrowningAgents.Add(agent);
     }
 }
