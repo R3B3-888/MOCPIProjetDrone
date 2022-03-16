@@ -18,14 +18,14 @@ namespace Tests.PlayMode
             AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Drones/Drone.prefab");
 
         private SwarmManager _swarm;
-        private const int NumberOfDrone = 3;
-        private GameObject _go;
+        private const int NumberOfDrone = 5;
+        private GameObject _gameObject;
 
         [SetUp]
         public void SetUp()
         {
-            _go = new GameObject();
-            _swarm = _go.AddComponent(typeof(SwarmManager)) as SwarmManager;
+            _gameObject = new GameObject();
+            _swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
             if (_swarm != null) _swarm.SwarmManagerConstructor(_dronePrefab, NumberOfDrone);
         }
 
@@ -33,28 +33,57 @@ namespace Tests.PlayMode
         public void TearDown()
         {
             Object.Destroy(_swarm);
-            Object.Destroy(_go);
+            Object.Destroy(_gameObject);
         }
 
         [UnityTest]
-        public IEnumerator _5_Drones_Spawned_By_SwarmManager()
+        public IEnumerator Swarm_Doing_State_0_SpawningDrones()
         {
-            _swarm.SwarmManagerConstructor(_dronePrefab, 5);
             yield return new WaitForFixedUpdate();
-            AreEqual(_swarm.transform.childCount, NumberOfDrone);
+            AreEqual(5, _swarm.transform.childCount);
         }
 
         [UnityTest]
-        public IEnumerator Swarm_Doing_State_TakeOff()
+        public IEnumerator Swarm_Doing_State_1_TakeOff()
         {
+            yield return new WaitUntil(() => _swarm.State == GameState.TakeOff);
+            
+            // We pickup the y of all drones of the swarm
             var dronesElevation = _swarm.Drones.Select(drone => drone.transform.position.y).ToList();
-            yield return new WaitForSeconds(1);
+            
+            yield return new WaitWhile(() => _swarm.State == GameState.TakeOff);
+            
+            // We pickup the y of all drones of the swarm after 1 second
             var dronesElevationAtSpawn = _swarm.Drones.Select(drone => drone.transform.position.y).ToList();
-            AreEqual(GameState.TakeOff, _swarm.State);
-            foreach (var nw in dronesElevationAtSpawn.Zip(dronesElevation, Tuple.Create)) 
+            
+            // We compare the two 2 list simultaneously
+            foreach (var (y, ySpawn) in dronesElevationAtSpawn.Zip(dronesElevation, Tuple.Create))
+                Greater(y, ySpawn);
+        }
+
+        [UnityTest]
+        public IEnumerator Swarm_Doing_State_On_The_Way_In()
+        {
+            yield return new WaitUntil(() => _swarm.State == GameState.OnTheWayIn);
+
+            // We calculate the distance DronePosition <===> TargetPosition just at the begin of the new State
+            var distanceDroneToTargetBefore = new List<float>(NumberOfDrone);
+            distanceDroneToTargetBefore.AddRange(_swarm.Drones.Select(drone =>
+                Vector3.Distance(drone.transform.position, _swarm.CalculateTargetPosition(drone))));
+
+            yield return new WaitForSeconds(2);
+
+            // We calculate the distance DronePosition <===> TargetPosition after 2 sec
+            var distanceDroneToTargetOnTheWayIn = new List<float>(NumberOfDrone);
+            distanceDroneToTargetOnTheWayIn.AddRange(_swarm.Drones.Select(drone =>
+                Vector3.Distance(drone.transform.position, _swarm.CalculateTargetPosition(drone))));
+
+            // We comparer the two list simultaneously 
+            foreach (var (d, dBefore) in distanceDroneToTargetBefore.Zip(
+                         distanceDroneToTargetOnTheWayIn, Tuple.Create))
             {
-                Greater(nw.Item1, nw.Item2);
-            } 
+                Less(dBefore, d);
+            }
         }
     }
 }

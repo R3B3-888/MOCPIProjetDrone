@@ -4,6 +4,7 @@ using System.Linq;
 using Drones;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace Swarm
 {
@@ -12,14 +13,20 @@ namespace Swarm
         #region Variables
 
         [SerializeField] private GameObject _dronePrefab;
-        [SerializeField] private int _numberOfDrone;
+        [SerializeField] private int _numberOfDrone = 5;
+        [SerializeField, Range(2, 20)] private int _startingElevation = 2;
+        [SerializeField] private Transform _targetPosition;
 
-        [SerializeField, Range(2, 20)] private int _startingElevation = 10;
         private readonly List<GameObject> _drones = new List<GameObject>();
 
-        public List<GameObject> Drones => _drones;
+        public List<GameObject> Drones
+        {
+            get => _drones;
+        }
+
         public GameState State { get; private set; }
-        
+
+        private bool doMoveToOnce { get; set; }
 
         #endregion
 
@@ -35,14 +42,11 @@ namespace Swarm
 
         #region Main Methods
 
-        void Start() => ChangeState(GameState.SpawningDrones);
+        private void Start() => State = GameState.SpawningDrones;
 
-        #endregion
-
-        private void ChangeState(GameState newState)
+        private void Update()
         {
-            State = newState;
-            switch (newState)
+            switch (State)
             {
                 case GameState.SpawningDrones:
                     HandleSpawningDrones();
@@ -50,16 +54,23 @@ namespace Swarm
                 case GameState.TakeOff:
                     HandleTakeOff();
                     break;
+                case GameState.OnTheWayIn:
+                    HandleOnTheWayIn();
+                    break;
+                case GameState.Monitoring:
+                    break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+                    throw new ArgumentOutOfRangeException(nameof(State), State, null);
             }
         }
 
+        #endregion
 
         private void HandleSpawningDrones()
         {
             SpawnDrones();
-            ChangeState(GameState.TakeOff);
+            State = GameState.TakeOff;
+            doMoveToOnce = true;
         }
 
         private void SpawnDrones()
@@ -80,9 +91,11 @@ namespace Swarm
 
         private void HandleTakeOff()
         {
-            TakeOffDrones(elevation: _startingElevation);
-            if (AllDronesAreAtWantedPosition())
-                ChangeState(GameState.OnTheWayIn);
+            if (doMoveToOnce)
+                TakeOffDrones(_startingElevation);
+            if (!AreAllDronesInRadiusOfWantedPosition()) return;
+            State = GameState.OnTheWayIn;
+            doMoveToOnce = true;
         }
 
         private void TakeOffDrones(int elevation)
@@ -94,11 +107,46 @@ namespace Swarm
                 pos.y += elevation;
                 controller.MoveTo(pos);
             }
+
+            doMoveToOnce = false;
         }
 
-        private bool AllDronesAreAtWantedPosition()
+
+        public bool AreAllDronesInRadiusOfWantedPosition()
         {
             return _drones.All(drone => drone.GetComponent<DroneController>().IsInRadiusOfWantedPosition());
+        }
+
+        private void HandleOnTheWayIn()
+        {
+            if (doMoveToOnce)
+            {
+                OnTheWayInDrones();
+            }
+
+            if (!AreAllDronesInRadiusOfWantedPosition()) return;
+            State = GameState.Monitoring;
+            doMoveToOnce = true;
+        }
+
+        private void OnTheWayInDrones()
+        {
+            foreach (var drone in _drones)
+            {
+                var controller = drone.GetComponent<DroneController>();
+                controller.MoveTo(CalculateTargetPosition(drone));
+            }
+
+            doMoveToOnce = false;
+        }
+
+        public Vector3 CalculateTargetPosition(GameObject drone)
+        {
+            var targetPosition = new Vector3(725, 61, 496);
+            var i = _drones.IndexOf(drone);
+            var offset = -_numberOfDrone / 2;
+            targetPosition.z += 2 * (offset + i);
+            return targetPosition;
         }
     }
 }
@@ -112,5 +160,6 @@ public enum GameState
     Monitoring = 3,
     OnTheWayBack = 4,
     Landing = 6,
-    Crashing = 7
+    Crashing = 7,
+    Standby = 8
 }
