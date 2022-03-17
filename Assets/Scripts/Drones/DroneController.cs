@@ -80,5 +80,10 @@ namespace Drones
         #endregion
 
         public Vector3 GetDirection() => Vector3.Normalize(wantedPosition - transform.position);
+
+        public void Stabilize()
+        {
+            _rb.drag = 100;
+        }
     }
 }

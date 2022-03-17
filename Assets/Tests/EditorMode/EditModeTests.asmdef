@@ -7,7 +7,8 @@
         "Main",
         "BeachObjects",
         "Drones",
-        "InputHandler"
+        "InputHandler",
+        "Swarm"
     ],
     "includePlatforms": [
         "Editor"
