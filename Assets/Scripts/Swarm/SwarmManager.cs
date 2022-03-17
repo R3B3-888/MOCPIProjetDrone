@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using Drones;
 using JetBrains.Annotations;
@@ -16,6 +17,8 @@ namespace Swarm
         [SerializeField] private int _numberOfDrone = 5;
         [SerializeField, Range(2, 20)] private int _startingElevation = 2;
         [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
+        [SerializeField] private bool _onStandbyAfterSpawn;
+        private bool _onDeploy = false;
 
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
@@ -25,11 +28,13 @@ namespace Swarm
 
         #region Constructor
 
-        public void SwarmManagerConstructor(GameObject dronePrefab, int numberOfDrone, Vector3 targetPosition)
+        public void SwarmManagerConstructor(GameObject dronePrefab, int numberOfDrone, Vector3 targetPosition,
+            bool onStandByAfterSpawn = false)
         {
             _dronePrefab = dronePrefab;
             _numberOfDrone = numberOfDrone;
             _targetPosition = targetPosition;
+            _onStandbyAfterSpawn = onStandByAfterSpawn;
         }
 
         #endregion
@@ -45,6 +50,9 @@ namespace Swarm
                 case GameState.SpawningDrones:
                     HandleSpawningDrones();
                     break;
+                case GameState.Standby:
+                    HandleStandby();
+                    break;
                 case GameState.TakeOff:
                     HandleTakeOff();
                     break;
@@ -54,10 +62,9 @@ namespace Swarm
                 case GameState.Monitoring:
                     HandleMonitoring();
                     break;
-                case GameState.OnTheWayBack:// TODO
-                case GameState.Landing:     // TODO
-                case GameState.Crashing:    // TODO
-                case GameState.Standby:     // TODO
+                case GameState.OnTheWayBack: // TODO
+                case GameState.Landing: // TODO
+                case GameState.Crashing: // TODO
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
@@ -70,8 +77,10 @@ namespace Swarm
         private void HandleSpawningDrones()
         {
             SpawnDrones();
-            state = GameState.TakeOff;
-            getComponentsOnce = true;
+            if (_onStandbyAfterSpawn == false)
+                state = GameState.TakeOff;
+            else
+                state = GameState.Standby;
         }
 
         private void SpawnDrones()
@@ -91,6 +100,21 @@ namespace Swarm
                 drones.Add(d);
             }
         }
+
+        #endregion
+
+        #region GameState.Standby
+
+        private void HandleStandby()
+        {
+            if (_onStandbyAfterSpawn == false)
+                state = GameState.TakeOff;
+            // waiting for user to activate The deployment
+            if (_onDeploy)
+                state = GameState.TakeOff;
+        }
+
+        public void OnDeploy() => _onDeploy = true;
 
         #endregion
 
@@ -173,11 +197,11 @@ namespace Swarm
 public enum GameState
 {
     SpawningDrones = 0,
-    TakeOff = 1,
-    OnTheWayIn = 2,
-    Monitoring = 3,
-    OnTheWayBack = 4,
+    Standby = 1,
+    TakeOff = 2,
+    OnTheWayIn = 3,
+    Monitoring = 4,
+    OnTheWayBack = 5,
     Landing = 6,
-    Crashing = 7,
-    Standby = 8
+    Crashing = 7
 }
