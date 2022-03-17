@@ -14,21 +14,12 @@ namespace Swarm
 
         [SerializeField] private GameObject _dronePrefab;
         [SerializeField] private int _numberOfDrone = 5;
-
         [SerializeField, Range(2, 20)] private int _startingElevation = 2;
-
-        // [SerializeField] private Transform _targetPosition;
         [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
 
-        private readonly List<GameObject> _drones = new List<GameObject>();
-
-        public List<GameObject> Drones
-        {
-            get => _drones;
-        }
-
+        public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
-        private bool getComponentsOnce { get; set; }
+        private bool getComponentsOnce { get; set; } = true;
 
         #endregion
 
@@ -63,6 +54,10 @@ namespace Swarm
                 case GameState.Monitoring:
                     HandleMonitoring();
                     break;
+                case GameState.OnTheWayBack:// TODO
+                case GameState.Landing:     // TODO
+                case GameState.Crashing:    // TODO
+                case GameState.Standby:     // TODO
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
@@ -87,12 +82,13 @@ namespace Swarm
                 var transform1 = transform;
                 var pos = transform1.position;
                 pos.z += offset + i;
-                var drone = Instantiate(_dronePrefab,
+                var droneInstance = Instantiate(_dronePrefab,
                     pos,
                     Quaternion.identity,
                     transform1);
-                drone.name = $"Drone {i}";
-                _drones.Add(drone);
+                droneInstance.name = $"Drone {i}";
+                var d = new Drone(droneInstance);
+                drones.Add(d);
             }
         }
 
@@ -111,12 +107,11 @@ namespace Swarm
 
         private void TakeOffDrones(int elevation)
         {
-            foreach (var drone in _drones)
+            foreach (var drone in drones)
             {
-                var controller = drone.GetComponent<DroneController>();
-                var pos = drone.transform.position;
+                var pos = drone.Position();
                 pos.y += elevation;
-                controller.MoveTo(pos);
+                drone.MoveTo(pos);
             }
 
             getComponentsOnce = false;
@@ -125,8 +120,7 @@ namespace Swarm
         #endregion
 
 
-        private bool AreAllDronesInRadiusOfWantedPosition() => _drones.All(drone =>
-            drone.GetComponent<DroneController>().IsInRadiusOfWantedPosition());
+        private bool AreAllDronesInRadiusOfWantedPosition() => drones.All(drone => drone.IsInRadiusOfWantedPosition());
 
         #region GameState.OnTheWayIn
 
@@ -142,22 +136,14 @@ namespace Swarm
 
         private void OnTheWayInDrones()
         {
-            foreach (var drone in _drones)
-            {
-                var controller = drone.GetComponent<DroneController>();
-                controller.MoveTo(CalculateTargetPosition(drone));
-            }
+            foreach (var drone in drones)
+                drone.MoveTo(
+                    drone.CalculateTargetPosition(
+                        drones,
+                        _targetPosition
+                    ));
 
             getComponentsOnce = false;
-        }
-
-        public Vector3 CalculateTargetPosition(GameObject drone)
-        {
-            var targetPosition = _targetPosition;
-            var i = _drones.IndexOf(drone);
-            var offset = -_numberOfDrone / 2;
-            targetPosition.z += (offset + i);
-            return targetPosition;
         }
 
         #endregion
@@ -173,11 +159,8 @@ namespace Swarm
 
         private void StabilizedOnDrones()
         {
-            foreach (var drone in _drones)
-            {
-                var controller = drone.GetComponent<DroneController>();
-                controller.Stabilize();
-            }
+            foreach (var drone in drones)
+                drone.Stabilize();
 
             getComponentsOnce = false;
         }
