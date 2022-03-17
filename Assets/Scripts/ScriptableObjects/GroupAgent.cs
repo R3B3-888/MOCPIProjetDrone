@@ -11,10 +11,15 @@ public class GroupAgent : MonoBehaviour
     Animator agentAnimator;
     public Animator AgentAnimator { get { return agentAnimator; } }
 
+    private bool drowning;
+    private bool rescued;
+
     // Start is called before the first frame update
     void Start()
     {
         agentAnimator = GetComponent<Animator>();
+        agentAnimator.SetBool("isDrowning", false);
+        agentAnimator.SetBool("isRescued", false);
     }
 
     public void Initialize(Group group)
@@ -22,8 +27,27 @@ public class GroupAgent : MonoBehaviour
         agentGroup = group;
     }
 
-    public void Move()
+    public void drown()
     {
-        // move
+        agentAnimator.SetBool("isDrowning", true);
+        drowning = true;
+    }
+
+    public void rescue()
+    {
+        agentAnimator.SetBool("isRescued", true);
+        agentAnimator.SetBool("isDrowning", false);
+        rescued = true;
+        drowning = false;
+    }
+
+    public bool isDrowning()
+    {
+        return drowning;
+    }
+
+    public bool isRescued()
+    {
+        return rescued;
     }
 }

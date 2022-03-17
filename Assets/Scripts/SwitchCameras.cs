@@ -3,41 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInput))]
 public class SwitchCameras : MonoBehaviour
 {
-    public PlayerInput input;
+    public Dictionary<string, GameObject> Cameras = new Dictionary<string, GameObject>();
 
-    public GameObject mainCamera;
+    private string mainCamera;
+    private string previousCamera;
+
+    public GameObject playerCamera;
     public GameObject houseBeachCamera;
-    public GameObject boatCamera;
+    public GameObject droneCamera;
 
-    public bool isBeachCameraOn;
 
     // Start is called before the first frame update
     void Start()
     {
-        input = GetComponent<PlayerInput>();
-        isBeachCameraOn = false;
+        Cameras.Add("playerCamera", playerCamera);
+        Cameras.Add("houseBeachCamera", houseBeachCamera);
+        Cameras.Add("DroneCamera", droneCamera);
+
+        mainCamera = "playerCamera";
+        previousCamera = "playerCamera";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(input.actions["houseBeach"].triggered)
+        showCamera();
+    }
+
+    public void showCamera()
+    {
+        Cameras[previousCamera].SetActive(false);
+        Cameras[mainCamera].SetActive(true);
+    }
+
+    public void showPlayerCamera()
+    {
+        if(previousCamera != "playerCamera")
         {
-            if(isBeachCameraOn)
-            {
-                mainCamera.SetActive(true);
-                houseBeachCamera.SetActive(false);
-                isBeachCameraOn = false;
-            }
-            else
-            {
-                mainCamera.SetActive(false);
-                houseBeachCamera.SetActive(true);
-                isBeachCameraOn = true;
-            }
+            previousCamera = mainCamera;
+            mainCamera = "playerCamera";
+        }
+    }
+
+    public void showHouseBeachCamera()
+    {
+        if(previousCamera != "houseBeachCamera")
+        {
+            previousCamera = mainCamera;
+            mainCamera = "houseBeachCamera";
+        }
+    }
+
+    public void showDroneCamera()
+    {
+        if(previousCamera != "DroneCamera")
+        {
+            previousCamera = mainCamera;
+            mainCamera = "DroneCamera";
         }
     }
 }
