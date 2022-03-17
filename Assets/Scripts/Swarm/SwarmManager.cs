@@ -14,8 +14,11 @@ namespace Swarm
 
         [SerializeField] private GameObject _dronePrefab;
         [SerializeField] private int _numberOfDrone = 5;
+
         [SerializeField, Range(2, 20)] private int _startingElevation = 2;
-        [SerializeField] private Transform _targetPosition;
+
+        // [SerializeField] private Transform _targetPosition;
+        [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
 
         private readonly List<GameObject> _drones = new List<GameObject>();
 
@@ -24,29 +27,29 @@ namespace Swarm
             get => _drones;
         }
 
-        public GameState State { get; private set; }
-
-        private bool doMoveToOnce { get; set; }
+        public GameState state { get; private set; }
+        private bool getComponentsOnce { get; set; }
 
         #endregion
 
         #region Constructor
 
-        public void SwarmManagerConstructor(GameObject dronePrefab, int numberOfDrone)
+        public void SwarmManagerConstructor(GameObject dronePrefab, int numberOfDrone, Vector3 targetPosition)
         {
             _dronePrefab = dronePrefab;
             _numberOfDrone = numberOfDrone;
+            _targetPosition = targetPosition;
         }
 
         #endregion
 
         #region Main Methods
 
-        private void Start() => State = GameState.SpawningDrones;
+        private void Start() => state = GameState.SpawningDrones;
 
         private void Update()
         {
-            switch (State)
+            switch (state)
             {
                 case GameState.SpawningDrones:
                     HandleSpawningDrones();
@@ -58,19 +61,22 @@ namespace Swarm
                     HandleOnTheWayIn();
                     break;
                 case GameState.Monitoring:
+                    HandleMonitoring();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(State), State, null);
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
         }
 
         #endregion
 
+        #region GameState.SpawningDrones
+
         private void HandleSpawningDrones()
         {
             SpawnDrones();
-            State = GameState.TakeOff;
-            doMoveToOnce = true;
+            state = GameState.TakeOff;
+            getComponentsOnce = true;
         }
 
         private void SpawnDrones()
@@ -78,24 +84,29 @@ namespace Swarm
             var offset = -_numberOfDrone / 2;
             for (var i = 0; i < _numberOfDrone; i++)
             {
-                var pos = transform.position;
+                var transform1 = transform;
+                var pos = transform1.position;
                 pos.z += offset + i;
                 var drone = Instantiate(_dronePrefab,
                     pos,
                     Quaternion.identity,
-                    transform);
+                    transform1);
                 drone.name = $"Drone {i}";
                 _drones.Add(drone);
             }
         }
 
+        #endregion
+
+        #region GameState.TakeOff
+
         private void HandleTakeOff()
         {
-            if (doMoveToOnce)
+            if (getComponentsOnce)
                 TakeOffDrones(_startingElevation);
             if (!AreAllDronesInRadiusOfWantedPosition()) return;
-            State = GameState.OnTheWayIn;
-            doMoveToOnce = true;
+            state = GameState.OnTheWayIn;
+            getComponentsOnce = true;
         }
 
         private void TakeOffDrones(int elevation)
@@ -108,25 +119,25 @@ namespace Swarm
                 controller.MoveTo(pos);
             }
 
-            doMoveToOnce = false;
+            getComponentsOnce = false;
         }
 
+        #endregion
 
-        public bool AreAllDronesInRadiusOfWantedPosition()
-        {
-            return _drones.All(drone => drone.GetComponent<DroneController>().IsInRadiusOfWantedPosition());
-        }
+
+        private bool AreAllDronesInRadiusOfWantedPosition() => _drones.All(drone =>
+            drone.GetComponent<DroneController>().IsInRadiusOfWantedPosition());
+
+        #region GameState.OnTheWayIn
 
         private void HandleOnTheWayIn()
         {
-            if (doMoveToOnce)
-            {
+            if (getComponentsOnce)
                 OnTheWayInDrones();
-            }
 
             if (!AreAllDronesInRadiusOfWantedPosition()) return;
-            State = GameState.Monitoring;
-            doMoveToOnce = true;
+            state = GameState.Monitoring;
+            getComponentsOnce = true;
         }
 
         private void OnTheWayInDrones()
@@ -137,17 +148,41 @@ namespace Swarm
                 controller.MoveTo(CalculateTargetPosition(drone));
             }
 
-            doMoveToOnce = false;
+            getComponentsOnce = false;
         }
 
         public Vector3 CalculateTargetPosition(GameObject drone)
         {
-            var targetPosition = new Vector3(725, 61, 496);
+            var targetPosition = _targetPosition;
             var i = _drones.IndexOf(drone);
             var offset = -_numberOfDrone / 2;
-            targetPosition.z += 2 * (offset + i);
+            targetPosition.z += (offset + i);
             return targetPosition;
         }
+
+        #endregion
+
+        #region GameState.Monitoring
+
+        private void HandleMonitoring()
+        {
+            if (getComponentsOnce)
+                StabilizedOnDrones();
+            // TODO:the camera surveillance   
+        }
+
+        private void StabilizedOnDrones()
+        {
+            foreach (var drone in _drones)
+            {
+                var controller = drone.GetComponent<DroneController>();
+                controller.Stabilize();
+            }
+
+            getComponentsOnce = false;
+        }
+
+        #endregion
     }
 }
 
