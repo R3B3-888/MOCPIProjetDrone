@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Swarm;
+using Cinemachine;
 
 public class SwitchCameras : MonoBehaviour
 {
@@ -9,10 +11,13 @@ public class SwitchCameras : MonoBehaviour
 
     private string mainCamera;
     private string previousCamera;
+    private int mainDrone;
+    private int previousDrone;
 
     public GameObject playerCamera;
     public GameObject houseBeachCamera;
-    public GameObject droneCamera;
+    public GameObject boatCamera;
+    public GameObject deployedSwarm;
 
 
     // Start is called before the first frame update
@@ -20,16 +25,18 @@ public class SwitchCameras : MonoBehaviour
     {
         Cameras.Add("playerCamera", playerCamera);
         Cameras.Add("houseBeachCamera", houseBeachCamera);
-        Cameras.Add("DroneCamera", droneCamera);
+        Cameras.Add("boatCamera", boatCamera);
 
         mainCamera = "playerCamera";
         previousCamera = "playerCamera";
+        mainDrone = 0;
+        previousDrone = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        showCamera();
+
     }
 
     public void showCamera()
@@ -38,30 +45,51 @@ public class SwitchCameras : MonoBehaviour
         Cameras[mainCamera].SetActive(true);
     }
 
+    public void showDroneCamera()
+    {
+        deployedSwarm.GetComponent<SwarmManager>().drones[previousDrone].droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)).gameObject.SetActive(false);
+        deployedSwarm.GetComponent<SwarmManager>().drones[mainDrone].droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)).gameObject.SetActive(true);
+    }
+
     public void showPlayerCamera()
     {
-        if(previousCamera != "playerCamera")
+        if(mainCamera != "playerCamera")
         {
             previousCamera = mainCamera;
             mainCamera = "playerCamera";
         }
+        showCamera();
     }
 
     public void showHouseBeachCamera()
     {
-        if(previousCamera != "houseBeachCamera")
+        if(mainCamera != "houseBeachCamera")
         {
             previousCamera = mainCamera;
             mainCamera = "houseBeachCamera";
         }
+        showCamera();
     }
 
-    public void showDroneCamera()
+    public void showBoatCamera()
     {
-        if(previousCamera != "DroneCamera")
+        if(mainCamera != "boatCamera")
         {
             previousCamera = mainCamera;
-            mainCamera = "DroneCamera";
+            mainCamera = "boatCamera";
         }
+        showCamera();
+    }
+
+    public void showDroneCameraNb(int index)
+    {
+        if(mainCamera != "deployedSwarm")
+        {
+            previousCamera = mainCamera;
+            mainCamera = "deployedSwarm";
+            previousDrone = mainDrone;
+            mainDrone = index;
+        }
+        showDroneCamera();
     }
 }
