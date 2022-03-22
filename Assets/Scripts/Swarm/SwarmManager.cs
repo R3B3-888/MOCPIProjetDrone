@@ -19,6 +19,7 @@ namespace Swarm
         [SerializeField, Range(2, 20)] private int _startingElevation = 2;
         [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
         [SerializeField] private bool _onStandbyAfterSpawn;
+        [SerializeField] private bool _doCrash = false;
         [SerializeField] private Transform _swimmers;
         [SerializeField] private LayoutType _layout;
         [SerializeField] private float _distanceBetweenDronesLayout = 15f;
@@ -191,7 +192,7 @@ namespace Swarm
 
         private void HandleMonitoring()
         {
-            if (getComponentsOnce)
+            if (getComponentsOnce && _doCrash)
             {
                 OnCrashing(0);
                 // TODO : electric explosion effet
@@ -201,6 +202,7 @@ namespace Swarm
             // TODO: TargetCamera calculé par rapport à son index
             // TODO: the camera surveillance   
         }
+
 
         #endregion
 
