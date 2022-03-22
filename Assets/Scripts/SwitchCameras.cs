@@ -7,89 +7,49 @@ using Cinemachine;
 
 public class SwitchCameras : MonoBehaviour
 {
-    public Dictionary<string, GameObject> Cameras = new Dictionary<string, GameObject>();
+    public Dictionary<string, CinemachineVirtualCamera> Cameras = new Dictionary<string, CinemachineVirtualCamera>();
 
     private string mainCamera;
     private string previousCamera;
     private int mainDrone;
     private int previousDrone;
 
-    public GameObject playerCamera;
-    public GameObject houseBeachCamera;
-    public GameObject boatCamera;
-    public GameObject deployedSwarm;
-
+    public CinemachineVirtualCamera playerCamera;
+    public CinemachineVirtualCamera houseBeachCamera;
+    public CinemachineVirtualCamera boatCamera;
+    public SwarmManager deployedSwarm;
+    private int droneCount;
 
     // Start is called before the first frame update
     void Start()
     {
+        // add the cameras
         Cameras.Add("playerCamera", playerCamera);
         Cameras.Add("houseBeachCamera", houseBeachCamera);
         Cameras.Add("boatCamera", boatCamera);
 
-        mainCamera = "playerCamera";
-        previousCamera = "playerCamera";
-        mainDrone = 0;
-        previousDrone = 0;
+        droneCount = deployedSwarm.drones.Count;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void showCamera()
-    {
-        Cameras[previousCamera].SetActive(false);
-        Cameras[mainCamera].SetActive(true);
-    }
-
-    public void showDroneCamera()
-    {
-        deployedSwarm.GetComponent<SwarmManager>().drones[previousDrone].droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)).gameObject.SetActive(false);
-        deployedSwarm.GetComponent<SwarmManager>().drones[mainDrone].droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)).gameObject.SetActive(true);
-    }
-
-    public void showPlayerCamera()
-    {
-        if(mainCamera != "playerCamera")
+    void Update(){
+        if(deployedSwarm.drones.Count != droneCount)
         {
-            previousCamera = mainCamera;
-            mainCamera = "playerCamera";
+            for (int i = 0; i < deployedSwarm.drones.Count; i++)
+            {
+                Debug.Log(deployedSwarm.drones[i].droneInstance.name);
+                Cameras.Add(deployedSwarm.drones[i].droneInstance.name, (CinemachineVirtualCamera) deployedSwarm.drones[i].droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)));
+            }
+            droneCount = deployedSwarm.drones.Count;
         }
-        showCamera();
     }
 
-    public void showHouseBeachCamera()
+    public void showCamera(string name)
     {
-        if(mainCamera != "houseBeachCamera")
+        foreach(KeyValuePair<string, CinemachineVirtualCamera> cam in Cameras)
         {
-            previousCamera = mainCamera;
-            mainCamera = "houseBeachCamera";
+            if(cam.Key != name)
+            cam.Value.Priority = 9;
         }
-        showCamera();
-    }
-
-    public void showBoatCamera()
-    {
-        if(mainCamera != "boatCamera")
-        {
-            previousCamera = mainCamera;
-            mainCamera = "boatCamera";
-        }
-        showCamera();
-    }
-
-    public void showDroneCameraNb(int index)
-    {
-        if(mainCamera != "deployedSwarm")
-        {
-            previousCamera = mainCamera;
-            mainCamera = "deployedSwarm";
-            previousDrone = mainDrone;
-            mainDrone = index;
-        }
-        showDroneCamera();
+        Cameras[name].Priority = 10;
     }
 }

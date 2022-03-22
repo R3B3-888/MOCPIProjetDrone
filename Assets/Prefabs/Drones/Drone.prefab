@@ -505,7 +505,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8526632056531032304}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: -0.59, z: 2.18}
+  m_LocalPosition: {x: 1, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8526632056557532598}
@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 8526632056665308784}
   - component: {fileID: 8526632056665308787}
   - component: {fileID: 8526632056665308786}
-  - component: {fileID: 8526632056665308785}
+  - component: {fileID: 7881739777268684464}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -569,16 +569,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damping: {x: 0.1, y: 0.5, z: 0.3}
-  ShoulderOffset: {x: 0, y: 0, z: 0}
-  VerticalArmLength: -0.2
-  CameraSide: 1
-  CameraDistance: -0.3
+  ShoulderOffset: {x: -0.15, y: -0.1, z: 0}
+  VerticalArmLength: 0
+  CameraSide: 0
+  CameraDistance: 0
   CameraCollisionFilter:
     serializedVersion: 2
     m_Bits: 0
   IgnoreTag: 
   CameraRadius: 0.2
---- !u!114 &8526632056665308785
+--- !u!114 &7881739777268684464
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -737,8 +737,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8526632056699253096}
-  m_LocalRotation: {x: 0.10209458, y: -0, z: -0, w: 0.9947747}
-  m_LocalPosition: {x: 0, y: -0.2, z: 0.3}
+  m_LocalRotation: {x: 0.2799002, y: 0.6493504, z: -0.2799002, w: 0.6493504}
+  m_LocalPosition: {x: 0.15, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8526632056665308784}
@@ -761,7 +761,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 8
+  m_Priority: 9
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 8526632056531032305}
   m_Follow: {fileID: 8526632055614695699}

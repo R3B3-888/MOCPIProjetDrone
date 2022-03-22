@@ -9,6 +9,7 @@ namespace Drones
         private readonly DroneController _controller;
 
         public Rigidbody rb { get; }
+        public GameObject droneInstance { get => _droneInstance; }
 
         public Vector3 Position() => _droneInstance.transform.position;
         
