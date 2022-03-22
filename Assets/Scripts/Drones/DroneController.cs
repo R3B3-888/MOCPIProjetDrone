@@ -83,7 +83,7 @@ namespace Drones
 
         public void Stabilize()
         {
-            _rb.drag = 100;
+            _rb.drag = 25;
         }
     }
 }
