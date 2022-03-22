@@ -29,12 +29,14 @@ public class GroupAgent : MonoBehaviour
 
     public void drown()
     {
+        Debug.Log("drown");
         agentAnimator.SetBool("isDrowning", true);
         drowning = true;
     }
 
     public void rescue()
     {
+        Debug.Log("rescue");
         agentAnimator.SetBool("isRescued", true);
         agentAnimator.SetBool("isDrowning", false);
         rescued = true;

@@ -36,7 +36,6 @@ public class SwitchCameras : MonoBehaviour
         {
             for (int i = 0; i < deployedSwarm.drones.Count; i++)
             {
-                Debug.Log(deployedSwarm.drones[i].droneInstance.name);
                 Cameras.Add(deployedSwarm.drones[i].droneInstance.name, (CinemachineVirtualCamera) deployedSwarm.drones[i].droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)));
             }
             droneCount = deployedSwarm.drones.Count;

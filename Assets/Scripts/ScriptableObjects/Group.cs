@@ -5,7 +5,7 @@ using UnityEngine;
 public class Group : MonoBehaviour
 {
     public GroupAgent agentPrefab;
-    List<GroupAgent> agents = new List<GroupAgent>();
+    public List<GroupAgent> agents = new List<GroupAgent>();
 
     [Range(5, 150)]
     public int startingCount = 20;
@@ -14,9 +14,8 @@ public class Group : MonoBehaviour
     [Range(0, 5)]
     public int willDrownAgent = 0;
 
-    List<GroupAgent> nonDrowningAgents;
-    private int drowningAgent = 0;
-
+    List<GroupAgent> nonDrowningAgents = new List<GroupAgent>();
+    private int nonDrowningSwimmers;
 
     GroupAgent spawnInSemiCircle()
     {
@@ -42,38 +41,42 @@ public class Group : MonoBehaviour
 
             newAgent.name = "Agent " + i;
             newAgent.Initialize(this);
-            agents.Add(newAgent);
+            nonDrowningAgents.Add(newAgent);
         }
-        nonDrowningAgents = new List<GroupAgent>(agents);
+        agents = new List<GroupAgent>();
     }
 
     // Update is called once per frame
-    // Update is called once per frame
     void Update()
     {
-        int nonDrowningSwimmers = startingCount - drowningAgent;
-        if( nonDrowningSwimmers > 0)
+        
+    }
+
+    public void UpdateNbToDrown(int nb){
+        willDrownAgent = nb;
+        nonDrowningSwimmers = nonDrowningAgents.Count;
+    }
+
+    public void Drown()
+    {
+        if(nonDrowningSwimmers > 0)
         {
             if(willDrownAgent > 0 && willDrownAgent <= nonDrowningSwimmers)
             {
                 int rand = 0;
+                GroupAgent agent;
                 for(int i = 0; i < willDrownAgent; i++)
                 {
                     rand = (int) Random.Range(0f, nonDrowningSwimmers * 1f);
-                    Drown(rand);
+                    agent = nonDrowningAgents[rand];
+                    agent.drown();
+                    agents.Add(agent);
+                    nonDrowningAgents.RemoveAt(rand);
                 }
                 willDrownAgent = 0;
             }
         }
-    }
-
-    public void Drown(int val)
-    {
-        if(val < nonDrowningAgents.Count)
-        {
-            nonDrowningAgents[val].drown();
-            nonDrowningAgents.RemoveAt(val);
-        }
+        
     }
 
     public void Rescue(GroupAgent agent)
