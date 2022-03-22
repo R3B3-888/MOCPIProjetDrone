@@ -1,4 +1,7 @@
+using System.Collections;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Drones
 {
@@ -55,7 +58,17 @@ namespace Drones
         }
 
         public static float GetAngleFromIndex(uint index, uint n) => Mathf.PI + (index + 1) * Mathf.PI / (n + 1);
-        
+
+        public IEnumerator Crash()
+        {
+            _controller.enabled = false;
+            droneInstance.GetComponent<InputsHandler>().enabled = false;
+            droneInstance.GetComponent<PlayerInput>().enabled = false;
+            rb.drag = 3;
+            rb.angularDrag = 3;
+            yield return new WaitForSeconds(6f);
+            Object.Destroy(droneInstance);
+        }
     }
 }
 

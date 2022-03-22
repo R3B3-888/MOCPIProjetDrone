@@ -65,6 +65,39 @@ namespace Tests.PlayMode
             }
         }
 
+        public class SwarmRepositionning
+        {
+            [SetUp]
+            public void SetUp()
+            {
+                _gameObject = new GameObject();
+                _swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
+                if (_swarm != null)
+                    _swarm.SwarmManagerConstructor(DronePrefab, NumberOfDrone, TargetPosition, 1f);
+            }
+
+            [TearDown]
+            public void TearDown()
+            {
+                UnityEngine.Object.Destroy(_swarm);
+                UnityEngine.Object.Destroy(_gameObject);
+            }
+
+            [UnityTest]
+            public IEnumerator Swarm_Crashing_A_Drone()
+            {
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                yield return new WaitForSeconds(1);
+                var droneYBeforeCrash = _swarm.drones[0].droneInstance.transform.position.y;
+                _swarm.OnCrashing(0);
+                yield return new WaitForSeconds(1);
+                var droneYAfterCrash = _swarm.drones[0].droneInstance.transform.position.y;
+                Less(droneYAfterCrash, droneYBeforeCrash);
+                yield return new WaitForSeconds(5.1f);
+                AreEqual(4, _swarm.transform.childCount);
+            }
+        }
+
         public class SwarmStandbyOff
         {
             [SetUp]

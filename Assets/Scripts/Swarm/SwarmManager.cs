@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
@@ -190,12 +191,23 @@ namespace Swarm
 
         private void HandleMonitoring()
         {
+            if (getComponentsOnce)
+            {
+                OnCrashing(0);
+                // TODO : electric explosion effet
+                getComponentsOnce = false;
+            }
             // TODO: foreach drone, TurnTowards target
             // TODO: TargetCamera calculé par rapport à son index
             // TODO: the camera surveillance   
         }
 
         #endregion
+
+        public void OnCrashing(int id)
+        {
+            StartCoroutine(drones[id].Crash());
+        }
     }
 }
 
