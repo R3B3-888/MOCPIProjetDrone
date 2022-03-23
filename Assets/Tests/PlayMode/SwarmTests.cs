@@ -101,15 +101,35 @@ namespace Tests.PlayMode
             }
 
             [UnityTest]
-            public IEnumerator Swarm_Crashing_Changing_State_And_Remove_In_DronesList_In_Monitoring_State()
+            public IEnumerator Swarm_Crashing_Minus_1_At_DronesList()
             {
                 yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
                 _swarm.OnCrashing(3);
                 yield return new WaitForEndOfFrame();
                 AreEqual(NumberOfDrone - 1, _swarm.drones.Count);
-                AreEqual(GameState.Repositioning, _swarm.state);
             }
 
+            [UnityTest]
+            public IEnumerator Swarm_Crashing_Changing_State()
+            {
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                _swarm.OnCrashing(3);
+                yield return new WaitForEndOfFrame();
+                AreEqual(GameState.Repositioning, _swarm.state);
+            }
+            
+            [UnityTest]
+            public IEnumerator Swarm_Crashing_Checking_Drones_Staying_In_Swarm_GameObject()
+            {
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                _swarm.OnCrashing(3);
+                yield return new WaitForEndOfFrame();
+                var dronesNameInScene = new List<string>();
+                for (var i = 0; i < 4; i++)
+                    dronesNameInScene.Add(_swarm.transform.GetChild(i).gameObject.name);
+                False(dronesNameInScene.Contains("Drone 4"));
+            }
+            
             [UnityTest]
             public IEnumerator Swarm_Crashing_During_TakeOff()
             {
