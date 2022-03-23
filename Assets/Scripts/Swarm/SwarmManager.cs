@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using Drones;
-using JetBrains.Annotations;
+using Unity.Plastic.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Swarm
 {
@@ -19,12 +16,13 @@ namespace Swarm
         [SerializeField, Range(2, 20)] private int _startingElevation = 2;
         [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
         [SerializeField] private bool _onStandbyAfterSpawn;
-        [SerializeField] private bool _doCrash = false;
         [SerializeField] private Transform _swimmers;
         [SerializeField] private LayoutType _layout;
         [SerializeField] private float _distanceBetweenDronesLayout = 15f;
-        private bool _onDeploy = false;
-        private List<Drone> _dronesNotOnPositionYet = new List<Drone>();
+        private Vector3 _distanceFromTarget = new Vector3(30, 60, 3);
+        private readonly List<Drone> _dronesNotOnPositionYet = new List<Drone>();
+        public List<Drone> dronesLost { get; }= new List<Drone>();
+        private bool _onDeploy;
 
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
@@ -35,11 +33,12 @@ namespace Swarm
         #region Constructor
 
         public void SwarmManagerConstructor(GameObject dronePrefab, int numberOfDrone, Vector3 targetPosition,
-            float distanceBetweenDronesLayout, bool onStandByAfterSpawn = false)
+            Vector3 distanceFromTarget, float distanceBetweenDronesLayout, bool onStandByAfterSpawn = false)
         {
             _dronePrefab = dronePrefab;
             _numberOfDrone = numberOfDrone;
             _targetPosition = targetPosition;
+            _distanceFromTarget = distanceFromTarget;
             _distanceBetweenDronesLayout = distanceBetweenDronesLayout;
             _onStandbyAfterSpawn = onStandByAfterSpawn;
         }
@@ -52,6 +51,7 @@ namespace Swarm
 
         private void Update()
         {
+            Debug.Log(state);
             switch (state)
             {
                 case GameState.SpawningDrones:
@@ -69,7 +69,9 @@ namespace Swarm
                 case GameState.Monitoring:
                     HandleMonitoring();
                     break;
-                case GameState.Repositioning: // TODO : if a drone is crashing or come closer to someone
+                case GameState.Repositioning:
+                    HandleRepositioning();
+                    break;
                 case GameState.OnTheWayBack: // TODO
                 case GameState.Landing: // TODO
                 case GameState.Crashing: // TODO
@@ -77,6 +79,7 @@ namespace Swarm
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
         }
+
 
         #endregion
 
@@ -100,7 +103,6 @@ namespace Swarm
                     pos,
                     Quaternion.identity,
                     transform1);
-                droneInstance.name = $"Drone {i}";
                 var d = new Drone(droneInstance, i);
                 drones.Add(d);
             }
@@ -178,7 +180,8 @@ namespace Swarm
                 drone.MoveTo(
                     drone.CalculateTargetPosition(
                         (uint) drones.Count,
-                        _targetPosition,
+                        _targetPosition,  
+                        _distanceFromTarget,
                         _distanceBetweenDronesLayout,
                         _layout
                     ));
@@ -192,23 +195,38 @@ namespace Swarm
 
         private void HandleMonitoring()
         {
-            if (getComponentsOnce && _doCrash)
-            {
-                OnCrashing(0);
-                // TODO : electric explosion effet
-                getComponentsOnce = false;
-            }
             // TODO: foreach drone, TurnTowards target
             // TODO: TargetCamera calculé par rapport à son index
             // TODO: the camera surveillance   
         }
 
-
+        #endregion
+        
+        #region GameState.Repositioning
+        
+        private void HandleRepositioning()
+        {
+            // TODO : remove previous id in drones
+            // TODO : id changing
+        }
+        
         #endregion
 
         public void OnCrashing(int id)
         {
             StartCoroutine(drones[id].Crash());
+
+            var droneLost = new Drone(drones[id].droneInstance, (uint) dronesLost.Count);
+            dronesLost.Add(droneLost);
+            drones.Remove(drones[id]);
+            
+            // TODO to put in Repositioning state
+            foreach (var drone in drones)
+            {
+                drone.id = (uint) drones.IndexOf(drone);
+            }
+            
+            state = GameState.Repositioning;
         }
     }
 }

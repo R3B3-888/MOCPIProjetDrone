@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Swarm;
 using Cinemachine;
+using Drones;
 
 public class SwitchCameras : MonoBehaviour
 {
@@ -31,24 +33,35 @@ public class SwitchCameras : MonoBehaviour
         droneCount = deployedSwarm.drones.Count;
     }
 
-    void Update(){
-        if(deployedSwarm.drones.Count != droneCount)
+    void Update()
+    {
+        if (deployedSwarm.drones.Count != droneCount)
         {
-            for (int i = 0; i < deployedSwarm.drones.Count; i++)
+            foreach (var key in Cameras.Keys.Where(key => key.StartsWith("Drone")))
+                Cameras.Remove(key);
+
+            foreach (var drone in deployedSwarm.drones)
             {
-                Cameras.Add(deployedSwarm.drones[i].droneInstance.name, (CinemachineVirtualCamera) deployedSwarm.drones[i].droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)));
+                Cameras.Add(drone.droneInstance.name,
+                    drone.droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)) as
+                        CinemachineVirtualCamera);
             }
+
             droneCount = deployedSwarm.drones.Count;
         }
     }
 
-    public void showCamera(string name)
+    public void ShowCamera(string keyName)
     {
-        foreach(KeyValuePair<string, CinemachineVirtualCamera> cam in Cameras)
+        // if last drone crashed and we try access his camera
+        if (!Cameras.ContainsKey(keyName)) return; 
+        
+        foreach (var cam in Cameras)
         {
-            if(cam.Key != name)
-            cam.Value.Priority = 9;
+            if (cam.Key != keyName)
+                cam.Value.Priority = 9;
         }
-        Cameras[name].Priority = 10;
+
+        Cameras[keyName].Priority = 10;
     }
 }

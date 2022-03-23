@@ -21,6 +21,8 @@ namespace Tests.PlayMode
         private const int NumberOfDrone = 5;
         private static GameObject _gameObject;
         private static readonly Vector3 TargetPosition = new Vector3(7, 2, 5);
+        private static Vector3 distanceFromTarget = Vector3.zero;
+        private static float distanceBetweenDronesInLayout = 1f;
 
         public class SwarmStandbyOn
         {
@@ -32,8 +34,8 @@ namespace Tests.PlayMode
                 _gameObject = new GameObject();
                 _swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
                 if (_swarm != null)
-                    _swarm.SwarmManagerConstructor(DronePrefab, NumberOfDrone, TargetPosition, 1f,
-                        OnStandByAfterSpawn);
+                    _swarm.SwarmManagerConstructor(DronePrefab, NumberOfDrone, TargetPosition, distanceFromTarget,
+                        distanceBetweenDronesInLayout, OnStandByAfterSpawn);
             }
 
             [TearDown]
@@ -47,10 +49,10 @@ namespace Tests.PlayMode
             public IEnumerator Swarm_Doing_State_1_Standby()
             {
                 yield return new WaitUntil(() => _swarm.state == GameState.Standby);
-                var positions1secAgo = _swarm.drones.Select(drone => drone.Position());
+                var positions1SecAgo = _swarm.drones.Select(drone => drone.Position());
                 yield return new WaitForSeconds(1);
                 var positions = _swarm.drones.Select(drone => drone.Position());
-                AreEqual(positions, positions1secAgo);
+                AreEqual(positions, positions1SecAgo);
             }
 
             [UnityTest]
@@ -65,7 +67,7 @@ namespace Tests.PlayMode
             }
         }
 
-        public class SwarmRepositionning
+        public class SwarmRepositioning
         {
             [SetUp]
             public void SetUp()
@@ -73,7 +75,8 @@ namespace Tests.PlayMode
                 _gameObject = new GameObject();
                 _swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
                 if (_swarm != null)
-                    _swarm.SwarmManagerConstructor(DronePrefab, NumberOfDrone, TargetPosition, 1f);
+                    _swarm.SwarmManagerConstructor(DronePrefab, NumberOfDrone, TargetPosition, distanceFromTarget,
+                        distanceBetweenDronesInLayout);
             }
 
             [TearDown]
@@ -84,17 +87,33 @@ namespace Tests.PlayMode
             }
 
             [UnityTest]
-            public IEnumerator Swarm_Crashing_A_Drone()
+            public IEnumerator Swarm_Drone_Crashing_Disappearing_During_Monitoring()
             {
                 yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
                 yield return new WaitForSeconds(1);
                 var droneYBeforeCrash = _swarm.drones[0].droneInstance.transform.position.y;
                 _swarm.OnCrashing(0);
                 yield return new WaitForSeconds(1);
-                var droneYAfterCrash = _swarm.drones[0].droneInstance.transform.position.y;
+                var droneYAfterCrash = _swarm.dronesLost[0].droneInstance.transform.position.y;
                 Less(droneYAfterCrash, droneYBeforeCrash);
                 yield return new WaitForSeconds(5.1f);
                 AreEqual(4, _swarm.transform.childCount);
+            }
+
+            [UnityTest]
+            public IEnumerator Swarm_Crashing_Changing_State_And_Remove_In_DronesList()
+            {
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                _swarm.OnCrashing(3);
+                yield return new WaitForEndOfFrame();
+                AreEqual(NumberOfDrone - 1, _swarm.drones.Count);
+                AreEqual(GameState.Repositioning, _swarm.state);
+            }
+
+            [UnityTest]
+            public IEnumerator Swarm_Crashing_During_TakeOff()
+            {
+                yield return null;
             }
         }
 
@@ -106,7 +125,8 @@ namespace Tests.PlayMode
                 _gameObject = new GameObject();
                 _swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
                 if (_swarm != null)
-                    _swarm.SwarmManagerConstructor(DronePrefab, NumberOfDrone, TargetPosition, 1f);
+                    _swarm.SwarmManagerConstructor(DronePrefab, NumberOfDrone, TargetPosition, distanceFromTarget,
+                        distanceBetweenDronesInLayout);
             }
 
             [TearDown]
@@ -150,14 +170,15 @@ namespace Tests.PlayMode
                 var distanceDroneToTargetBefore = new List<float>(NumberOfDrone);
                 distanceDroneToTargetBefore.AddRange(_swarm.drones.Select(drone =>
                     Vector3.Distance(drone.Position(), drone.CalculateTargetPosition(
-                        NumberOfDrone, TargetPosition))));
+                        NumberOfDrone, TargetPosition, distanceFromTarget))));
 
                 yield return new WaitForSeconds(2);
 
                 // We calculate the distance DronePosition <===> TargetPosition after 2 sec
                 var distanceDroneToTargetOnTheWayIn = new List<float>(NumberOfDrone);
                 distanceDroneToTargetOnTheWayIn.AddRange(_swarm.drones.Select(drone =>
-                    Vector3.Distance(drone.Position(), drone.CalculateTargetPosition(NumberOfDrone, TargetPosition))));
+                    Vector3.Distance(drone.Position(),
+                        drone.CalculateTargetPosition(NumberOfDrone, TargetPosition, distanceFromTarget))));
 
                 // We comparer the two list simultaneously 
                 foreach (var (d, dBefore) in distanceDroneToTargetBefore.Zip(
@@ -179,11 +200,11 @@ namespace Tests.PlayMode
             {
                 yield return new WaitForEndOfFrame();
                 var n = (uint) _swarm.drones.Count;
-                AreEqual(3f, _swarm.drones[0].CalculateTargetPosition(n, TargetPosition).z);
-                AreEqual(4f, _swarm.drones[1].CalculateTargetPosition(n, TargetPosition).z);
-                AreEqual(5f, _swarm.drones[2].CalculateTargetPosition(n, TargetPosition).z);
-                AreEqual(6f, _swarm.drones[3].CalculateTargetPosition(n, TargetPosition).z);
-                AreEqual(7f, _swarm.drones[4].CalculateTargetPosition(n, TargetPosition).z);
+                AreEqual(3f, _swarm.drones[0].CalculateTargetPosition(n, TargetPosition, distanceFromTarget).z);
+                AreEqual(4f, _swarm.drones[1].CalculateTargetPosition(n, TargetPosition, distanceFromTarget).z);
+                AreEqual(5f, _swarm.drones[2].CalculateTargetPosition(n, TargetPosition, distanceFromTarget).z);
+                AreEqual(6f, _swarm.drones[3].CalculateTargetPosition(n, TargetPosition, distanceFromTarget).z);
+                AreEqual(7f, _swarm.drones[4].CalculateTargetPosition(n, TargetPosition, distanceFromTarget).z);
             }
 
             [UnityTest]
@@ -191,11 +212,11 @@ namespace Tests.PlayMode
             {
                 yield return new WaitForEndOfFrame();
                 var n = (uint) _swarm.drones.Count;
-                AreEqual(-25f, _swarm.drones[0].CalculateTargetPosition(n, TargetPosition, 15f).z);
-                AreEqual(-10f, _swarm.drones[1].CalculateTargetPosition(n, TargetPosition, 15f).z);
-                AreEqual(5f, _swarm.drones[2].CalculateTargetPosition(n, TargetPosition, 15f).z);
-                AreEqual(20f, _swarm.drones[3].CalculateTargetPosition(n, TargetPosition, 15f).z);
-                AreEqual(35f, _swarm.drones[4].CalculateTargetPosition(n, TargetPosition, 15f).z);
+                AreEqual(-25f, _swarm.drones[0].CalculateTargetPosition(n, TargetPosition, distanceFromTarget, 15f).z);
+                AreEqual(-10f, _swarm.drones[1].CalculateTargetPosition(n, TargetPosition, distanceFromTarget, 15f).z);
+                AreEqual(5f, _swarm.drones[2].CalculateTargetPosition(n, TargetPosition, distanceFromTarget, 15f).z);
+                AreEqual(20f, _swarm.drones[3].CalculateTargetPosition(n, TargetPosition, distanceFromTarget, 15f).z);
+                AreEqual(35f, _swarm.drones[4].CalculateTargetPosition(n, TargetPosition, distanceFromTarget, 15f).z);
             }
         }
 
@@ -207,7 +228,8 @@ namespace Tests.PlayMode
                 _gameObject = new GameObject();
                 _swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
                 if (_swarm == null) yield break;
-                _swarm.SwarmManagerConstructor(DronePrefab, 1, TargetPosition, 1);
+                _swarm.SwarmManagerConstructor(DronePrefab, 1, TargetPosition, distanceFromTarget,
+                    distanceBetweenDronesInLayout);
                 yield return new WaitForSeconds(.8f);
                 var droneAngle = _swarm.drones[0].droneInstance.GetComponent<InputsHandler>().Yaw;
                 yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
