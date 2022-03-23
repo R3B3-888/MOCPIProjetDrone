@@ -1,67 +1,66 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Swarm;
 using Cinemachine;
-using Drones;
 
 public class SwitchCameras : MonoBehaviour
 {
-    public Dictionary<string, CinemachineVirtualCamera> Cameras = new Dictionary<string, CinemachineVirtualCamera>();
+    private readonly Dictionary<string, CinemachineVirtualCamera> _cameras = new Dictionary<string, CinemachineVirtualCamera>();
 
     private string mainCamera;
     private string previousCamera;
     private int mainDrone;
     private int previousDrone;
 
-    public CinemachineVirtualCamera playerCamera;
-    public CinemachineVirtualCamera houseBeachCamera;
-    public CinemachineVirtualCamera boatCamera;
-    public SwarmManager deployedSwarm;
-    private int droneCount;
+    public CinemachineVirtualCamera _playerCamera;
+    public CinemachineVirtualCamera _houseBeachCamera;
+    public CinemachineVirtualCamera _boatCamera;
+    public SwarmManager _deployedSwarm;
+    private int _droneCount;
+    private bool _isCamerasFilled = false;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        Debug.Log("start of switch camera");
         // add the cameras
-        Cameras.Add("playerCamera", playerCamera);
-        Cameras.Add("houseBeachCamera", houseBeachCamera);
-        Cameras.Add("boatCamera", boatCamera);
-
-        droneCount = deployedSwarm.drones.Count;
+        _cameras.Add("playerCamera", _playerCamera);
+        _cameras.Add("houseBeachCamera", _houseBeachCamera);
+        _cameras.Add("boatCamera", _boatCamera);
     }
 
-    void Update()
+    private void Update()
     {
-        if (deployedSwarm.drones.Count != droneCount)
+        if (_isCamerasFilled is false && _deployedSwarm.state == GameState.Standby)
+            FillCamerasWithDronesCamera();
+        if (_deployedSwarm.drones.Count >= _droneCount) return;
+        _cameras.Remove(_deployedSwarm.dronesLost.Last().droneInstance.name);
+        _droneCount = _deployedSwarm.drones.Count;
+    }
+
+    private void FillCamerasWithDronesCamera()
+    {
+        _droneCount = _deployedSwarm.drones.Count;
+        foreach (var drone in _deployedSwarm.drones)
         {
-            foreach (var key in Cameras.Keys.Where(key => key.StartsWith("Drone")))
-                Cameras.Remove(key);
-
-            foreach (var drone in deployedSwarm.drones)
-            {
-                Cameras.Add(drone.droneInstance.name,
-                    drone.droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)) as
-                        CinemachineVirtualCamera);
-            }
-
-            droneCount = deployedSwarm.drones.Count;
+            Debug.Log(drone.droneInstance.name);
+            _cameras.Add(drone.droneInstance.name,
+                drone.droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)) as
+                    CinemachineVirtualCamera);
         }
+
+        _isCamerasFilled = true;
     }
 
     public void ShowCamera(string keyName)
     {
         // if last drone crashed and we try access his camera
-        if (!Cameras.ContainsKey(keyName)) return; 
-        
-        foreach (var cam in Cameras)
-        {
+        if (!_cameras.ContainsKey(keyName)) return;
+
+        foreach (var cam in _cameras)
             if (cam.Key != keyName)
                 cam.Value.Priority = 9;
-        }
 
-        Cameras[keyName].Priority = 10;
+        _cameras[keyName].Priority = 10;
     }
 }

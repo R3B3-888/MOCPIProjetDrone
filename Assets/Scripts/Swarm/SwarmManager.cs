@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Drones;
-using Unity.Plastic.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 namespace Swarm
@@ -47,11 +46,14 @@ namespace Swarm
 
         #region Main Methods
 
-        private void Start() => state = GameState.SpawningDrones;
+        private void Start()
+        {
+            state = GameState.SpawningDrones;
+            Debug.Log("start swarmmanager");
+        }
 
         private void Update()
         {
-            Debug.Log(state);
             switch (state)
             {
                 case GameState.SpawningDrones:
@@ -214,19 +216,17 @@ namespace Swarm
 
         public void OnCrashing(int id)
         {
+            // TODO : check id if already crash drone
             StartCoroutine(drones[id].Crash());
 
+            state = GameState.Repositioning;
+            
+            // TODO to put in Repositioning state
             var droneLost = new Drone(drones[id].droneInstance, (uint) dronesLost.Count);
             dronesLost.Add(droneLost);
             drones.Remove(drones[id]);
-            
-            // TODO to put in Repositioning state
             foreach (var drone in drones)
-            {
                 drone.id = (uint) drones.IndexOf(drone);
-            }
-            
-            state = GameState.Repositioning;
         }
     }
 }

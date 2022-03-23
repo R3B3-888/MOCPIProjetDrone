@@ -101,7 +101,7 @@ namespace Tests.PlayMode
             }
 
             [UnityTest]
-            public IEnumerator Swarm_Crashing_Changing_State_And_Remove_In_DronesList()
+            public IEnumerator Swarm_Crashing_Changing_State_And_Remove_In_DronesList_In_Monitoring_State()
             {
                 yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
                 _swarm.OnCrashing(3);

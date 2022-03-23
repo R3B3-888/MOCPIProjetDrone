@@ -5376,7 +5376,7 @@ GameObject:
   - component: {fileID: 122985154}
   - component: {fileID: 122985153}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Button 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5456,7 +5456,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Drone 0
+          m_StringArgument: Drone 1
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &122985154
@@ -6345,10 +6345,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5a694d29bf3b9647a0601725c34cbeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 226384898}
-  houseBeachCamera: {fileID: 608523105}
-  boatCamera: {fileID: 151527690}
-  deployedSwarm: {fileID: 1718078532}
+  _playerCamera: {fileID: 0}
+  _houseBeachCamera: {fileID: 0}
+  _boatCamera: {fileID: 0}
+  _deployedSwarm: {fileID: 0}
 --- !u!114 &143671456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9833,17 +9833,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
   m_PrefabInstance: {fileID: 1399223267}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &226384898 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2070925441746177913, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
-  m_PrefabInstance: {fileID: 1399223267}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &227748662
 GameObject:
   m_ObjectHideFlags: 0
@@ -26338,42 +26327,6 @@ Transform:
   m_Father: {fileID: 511313768}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &572068757
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: WaterDepthMap
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 3
-  m_Width: 1024
-  m_Height: 1024
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthFormat: 2
-  m_ColorFormat: 142
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &572588206
 GameObject:
   m_ObjectHideFlags: 0
@@ -29344,7 +29297,7 @@ GameObject:
   - component: {fileID: 647386223}
   - component: {fileID: 647386222}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: Button 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29424,7 +29377,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 2
           m_FloatArgument: 0
-          m_StringArgument: Drone 2
+          m_StringArgument: Drone 3
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &647386223
@@ -50005,7 +49958,7 @@ GameObject:
   - component: {fileID: 1124864579}
   - component: {fileID: 1124864578}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: Button 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50085,7 +50038,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 4
           m_FloatArgument: 0
-          m_StringArgument: Drone 4
+          m_StringArgument: Drone 5
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1124864579
@@ -69347,7 +69300,7 @@ GameObject:
   - component: {fileID: 1570194932}
   - component: {fileID: 1570194931}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: Button 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69427,7 +69380,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 3
           m_FloatArgument: 0
-          m_StringArgument: Drone 3
+          m_StringArgument: Drone 4
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1570194932
@@ -70930,7 +70883,7 @@ GameObject:
   - component: {fileID: 1605174267}
   - component: {fileID: 1605174266}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Button 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71010,7 +70963,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
           m_FloatArgument: 0
-          m_StringArgument: Drone 1
+          m_StringArgument: Drone 2
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1605174267
@@ -71267,6 +71220,42 @@ Transform:
   m_Father: {fileID: 1590206030}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!84 &1613836229
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterDepthMap
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 3
+  m_Width: 1024
+  m_Height: 1024
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthFormat: 2
+  m_ColorFormat: 142
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1614981338
 GameObject:
   m_ObjectHideFlags: 0
