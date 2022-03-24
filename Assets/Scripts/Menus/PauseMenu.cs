@@ -27,6 +27,7 @@ public class PauseMenu : MonoBehaviour
             }
             else
             {
+                // TODO : enabled false on panel menu
                 PauseGame();
             }
         }

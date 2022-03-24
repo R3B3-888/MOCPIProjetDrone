@@ -33,7 +33,7 @@ public class SwitchCameras : MonoBehaviour
 
     private void Update()
     {
-        LogCameras();
+        // LogCameras();
         
         // Will pass only once right after all drone have spawn
         if (_isCamerasFilled is false && _deployedSwarm.state == GameState.Standby)
