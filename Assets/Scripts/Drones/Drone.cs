@@ -34,32 +34,31 @@ namespace Drones
         #endregion
 
         public Vector3 Position() => droneInstance.transform.position;
-        
+
         public void Stabilize() => _controller.Stabilize();
 
         public void Destabilize() => _controller.Destabilize();
-        
+
         public bool IsStillFlying() => _controller.enabled;
-        
+
         public void MoveTo(Vector3 pos) => _controller.MoveTo(pos);
 
         public bool IsInRadiusOfWantedPosition() => _controller.IsInRadiusOfWantedPosition();
 
         public Vector3 CalculateTargetPosition(uint dronesCount, Vector3 baseTargetPosition,
-            Vector3 distanceFromTarget, float distanceBetweenDrones = 1f, LayoutType layout = LayoutType.Line)
+            Vector3 distanceFromTarget, float areaLength, LayoutType layout = LayoutType.Line)
         {
             switch (layout)
             {
                 case LayoutType.Line:
                     var t = baseTargetPosition;
-                    var offset = -dronesCount / 2;
-                    t.z += (offset + id) * distanceBetweenDrones;
-                    t.y = distanceFromTarget.y;
                     t.x -= distanceFromTarget.x;
+                    t.y = distanceFromTarget.y;
+                    t.z += areaLength * ((float) rankInSwarm / (dronesCount + 1));
                     return t;
                 case LayoutType.Arc:
                     var angle = GetAngleFromIndex(id, dronesCount);
-                    var z = Mathf.Cos(angle) * distanceBetweenDrones * distanceFromTarget.z;
+                    var z = Mathf.Cos(angle) * (areaLength / 2f) * distanceFromTarget.z;
                     var x = Mathf.Sin(angle) * distanceFromTarget.x;
                     return new Vector3(baseTargetPosition.x + x, distanceFromTarget.y, baseTargetPosition.z + z);
                 default:
@@ -80,7 +79,6 @@ namespace Drones
         }
 
         public void UpdateRankInSwarm(int rank) => rankInSwarm = rank + 1;
-
     }
 }
 

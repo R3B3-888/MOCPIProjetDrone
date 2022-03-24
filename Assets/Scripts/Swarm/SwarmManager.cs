@@ -17,11 +17,11 @@ namespace Swarm
         [SerializeField] private bool _onStandbyAfterSpawn;
         [SerializeField] private Transform _swimmers;
         [SerializeField] private LayoutType _layout;
-        [SerializeField] private float _distanceBetweenDronesLayout = 15f;
+        [SerializeField] private float _areaLength = 60;
         private Vector3 _distanceFromTarget = new Vector3(30, 60, 3);
         private readonly List<Drone> _dronesNotOnPositionYet = new List<Drone>();
         public List<Drone> dronesLost { get; } = new List<Drone>();
-        private bool _onDeploy, _idHasBeenUpdated = false, _needToCacheOnce = true;
+        private bool _needToCacheOnce = true;
 
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
@@ -31,13 +31,12 @@ namespace Swarm
         #region Constructor
 
         public void SwarmManagerConstructor(GameObject dronePrefab, int numberOfDrone, Vector3 targetPosition,
-            Vector3 distanceFromTarget, float distanceBetweenDronesLayout, bool onStandByAfterSpawn = false)
+            Vector3 distanceFromTarget, bool onStandByAfterSpawn = false)
         {
             _dronePrefab = dronePrefab;
             _numberOfDrone = numberOfDrone;
             _targetPosition = targetPosition;
             _distanceFromTarget = distanceFromTarget;
-            _distanceBetweenDronesLayout = distanceBetweenDronesLayout;
             _onStandbyAfterSpawn = onStandByAfterSpawn;
         }
 
@@ -150,7 +149,7 @@ namespace Swarm
             {
                 foreach (var drone in drones)
                     _dronesNotOnPositionYet.Add(drone);
-                OnTheWayInDrones();
+                OrderMoveToDrones();
             }
 
             foreach (var drone in drones)
@@ -165,16 +164,17 @@ namespace Swarm
             _needToCacheOnce = true;
         }
 
-        private void OnTheWayInDrones()
+        private void OrderMoveToDrones()
         {
             if (_swimmers != null) _targetPosition = _swimmers.position;
+            _targetPosition.z -= _layout == LayoutType.Line ? _areaLength / 2 : 0;
             foreach (var drone in drones)
                 drone.MoveTo(
                     drone.CalculateTargetPosition(
                         (uint) drones.Count,
                         _targetPosition,
                         _distanceFromTarget,
-                        _distanceBetweenDronesLayout,
+                        _areaLength,
                         _layout
                     ));
 
@@ -211,27 +211,23 @@ namespace Swarm
             foreach (var drone in drones)
             {
                 drone.UpdateRankInSwarm(drones.IndexOf(drone));
-                // drone.Destabilize();
+                drone.Destabilize();
             }
 
-            state = GameState.Monitoring;
-            // state = GameState.OnTheWayIn;
+            // state = GameState.Monitoring;
+            state = GameState.OnTheWayIn;
         }
 
         #endregion
 
+        // Warning !! : id != index of drones list
+        // id is equal to a drone.id
         public void OnCrashing(int id)
         {
             if (dronesLost.Any(drone => drone.id == id)) return;
 
-            var droneToCrash = drones[id];
             foreach (var drone in drones.Where(drone => id == drone.id))
-            {
-                droneToCrash = drone;
-                break;
-            }
-
-            StartCoroutine(droneToCrash.Crash());
+                StartCoroutine(drone.Crash());
 
             state = GameState.Repositioning;
         }
