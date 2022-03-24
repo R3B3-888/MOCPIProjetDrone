@@ -20,12 +20,11 @@ namespace Swarm
         [SerializeField] private float _distanceBetweenDronesLayout = 15f;
         private Vector3 _distanceFromTarget = new Vector3(30, 60, 3);
         private readonly List<Drone> _dronesNotOnPositionYet = new List<Drone>();
-        public List<Drone> dronesLost { get; }= new List<Drone>();
-        private bool _onDeploy;
+        public List<Drone> dronesLost { get; } = new List<Drone>();
+        private bool _onDeploy, _idHasBeenUpdated = false, _getComponentsOnce = true;
 
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
-        private bool getComponentsOnce { get; set; } = true;
 
         #endregion
 
@@ -46,11 +45,7 @@ namespace Swarm
 
         #region Main Methods
 
-        private void Start()
-        {
-            state = GameState.SpawningDrones;
-            Debug.Log("start swarmmanager");
-        }
+        private void Start() => state = GameState.SpawningDrones;
 
         private void Update()
         {
@@ -81,7 +76,6 @@ namespace Swarm
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
         }
-
 
         #endregion
 
@@ -131,11 +125,11 @@ namespace Swarm
 
         private void HandleTakeOff()
         {
-            if (getComponentsOnce)
+            if (_getComponentsOnce)
                 TakeOffDronesAt(_startingElevation);
             if (!drones.All(drone => drone.IsInRadiusOfWantedPosition())) return;
             state = GameState.OnTheWayIn;
-            getComponentsOnce = true;
+            _getComponentsOnce = true;
         }
 
         private void TakeOffDronesAt(int elevation)
@@ -147,7 +141,7 @@ namespace Swarm
                 drone.MoveTo(pos);
             }
 
-            getComponentsOnce = false;
+            _getComponentsOnce = false;
         }
 
         #endregion
@@ -156,7 +150,7 @@ namespace Swarm
 
         private void HandleOnTheWayIn()
         {
-            if (getComponentsOnce)
+            if (_getComponentsOnce)
             {
                 foreach (var drone in drones)
                     _dronesNotOnPositionYet.Add(drone);
@@ -172,7 +166,7 @@ namespace Swarm
 
             if (_dronesNotOnPositionYet.Count != 0) return;
             state = GameState.Monitoring;
-            getComponentsOnce = true;
+            _getComponentsOnce = true;
         }
 
         private void OnTheWayInDrones()
@@ -182,13 +176,13 @@ namespace Swarm
                 drone.MoveTo(
                     drone.CalculateTargetPosition(
                         (uint) drones.Count,
-                        _targetPosition,  
+                        _targetPosition,
                         _distanceFromTarget,
                         _distanceBetweenDronesLayout,
                         _layout
                     ));
 
-            getComponentsOnce = false;
+            _getComponentsOnce = false;
         }
 
         #endregion
@@ -203,15 +197,25 @@ namespace Swarm
         }
 
         #endregion
-        
+
         #region GameState.Repositioning
-        
+
         private void HandleRepositioning()
         {
-            // TODO : remove previous id in drones
-            // TODO : id changing
+            if (_idHasBeenUpdated is false)
+            {
+                var idOfCrashDrone = 0;
+                foreach (var drone in drones.Where(drone => !drone.IsStillFlying()))
+                    idOfCrashDrone = (int) drone.id;
+                var droneLost = new Drone(drones[idOfCrashDrone].droneInstance, (uint) dronesLost.Count);
+                dronesLost.Add(droneLost);
+                drones.Remove(drones[idOfCrashDrone]);
+                foreach (var drone in drones)
+                    drone.id = (uint) drones.IndexOf(drone);
+                _idHasBeenUpdated = true;
+            }
         }
-        
+
         #endregion
 
         public void OnCrashing(int id)
@@ -220,13 +224,6 @@ namespace Swarm
             StartCoroutine(drones[id].Crash());
 
             state = GameState.Repositioning;
-            
-            // TODO to put in Repositioning state
-            var droneLost = new Drone(drones[id].droneInstance, (uint) dronesLost.Count);
-            dronesLost.Add(droneLost);
-            drones.Remove(drones[id]);
-            foreach (var drone in drones)
-                drone.id = (uint) drones.IndexOf(drone);
         }
     }
 }

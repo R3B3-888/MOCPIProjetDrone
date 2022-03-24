@@ -106,6 +106,7 @@ namespace Tests.PlayMode
                 yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
                 _swarm.OnCrashing(3);
                 yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
                 AreEqual(NumberOfDrone - 1, _swarm.drones.Count);
             }
 
@@ -124,6 +125,7 @@ namespace Tests.PlayMode
                 yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
                 _swarm.OnCrashing(3);
                 yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
                 var dronesNameInScene = new List<string>();
                 for (var i = 0; i < 4; i++)
                     dronesNameInScene.Add(_swarm.transform.GetChild(i).gameObject.name);
@@ -131,10 +133,35 @@ namespace Tests.PlayMode
             }
             
             [UnityTest]
-            public IEnumerator Swarm_Crashing_During_TakeOff()
+            public IEnumerator Swarm_Crashing_Drones_id_Updating()
             {
-                yield return null;
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                _swarm.OnCrashing(3);
+                yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
+                for (var i = 0; i < 4; i++)
+                    AreEqual(i, _swarm.drones[i].id); 
             }
+
+            [UnityTest]
+            public IEnumerator Swarm_Crashing_Drone_In_A_Drone_Lost_List()
+            {
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                _swarm.OnCrashing(3);
+                yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
+                AreEqual(0, _swarm.dronesLost.Last().id);
+            }
+
+            [UnityTest]
+            public IEnumerator Drone_Testing_Flying()
+            {
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                var drone = _swarm.drones[3];
+                _swarm.OnCrashing(3);
+                False(drone.IsStillFlying());
+            }
+
         }
 
         public class SwarmStandbyOff

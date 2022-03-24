@@ -68,6 +68,8 @@ namespace Drones
             yield return new WaitForSeconds(6f);
             Object.Destroy(droneInstance);
         }
+
+        public bool IsStillFlying() => _controller.enabled;
     }
 }
 
