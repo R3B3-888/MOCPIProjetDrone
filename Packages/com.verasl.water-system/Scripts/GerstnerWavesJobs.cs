@@ -48,8 +48,6 @@ namespace WaterSystem
 
         public static void Cleanup()
         {
-            if(Debug.isDebugBuild)
-                Debug.Log("Cleaning up Gerstner Wave Jobs");
             _waterHeightHandle.Complete();
 
             //Cleanup native arrays
