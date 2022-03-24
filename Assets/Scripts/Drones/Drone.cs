@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,23 +47,23 @@ namespace Drones
         public bool IsInRadiusOfWantedPosition() => _controller.IsInRadiusOfWantedPosition();
 
         public Vector3 CalculateTargetPosition(uint dronesCount, Vector3 baseTargetPosition,
-            Vector3 distanceFromTarget, float areaLength, LayoutType layout = LayoutType.Line)
+            Vector2 distanceFromTarget, float areaLength, LayoutType layout = LayoutType.Line)
         {
+            var t = baseTargetPosition;
+            t.y += distanceFromTarget.y;
             switch (layout)
             {
                 case LayoutType.Line:
-                    var t = baseTargetPosition;
                     t.x -= distanceFromTarget.x;
-                    t.y = distanceFromTarget.y;
                     t.z += areaLength * ((float) rankInSwarm / (dronesCount + 1));
                     return t;
                 case LayoutType.Arc:
-                    var angle = GetAngleFromIndex(id, dronesCount);
-                    var z = Mathf.Cos(angle) * (areaLength / 2f) * distanceFromTarget.z;
-                    var x = Mathf.Sin(angle) * distanceFromTarget.x;
-                    return new Vector3(baseTargetPosition.x + x, distanceFromTarget.y, baseTargetPosition.z + z);
+                    var angle = GetAngleFromIndex(rankInSwarm - 1, dronesCount);
+                    t.x += Mathf.Sin(angle) * distanceFromTarget.x;
+                    t.z += Mathf.Cos(angle) * (areaLength / 2f);
+                    return t;
                 default:
-                    return Vector3.zero;
+                    return t;
             }
         }
 

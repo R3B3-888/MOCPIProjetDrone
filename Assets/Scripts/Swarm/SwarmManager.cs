@@ -18,7 +18,7 @@ namespace Swarm
         [SerializeField] private Transform _swimmers;
         [SerializeField] private LayoutType _layout;
         [SerializeField] private float _areaLength = 60;
-        private Vector3 _distanceFromTarget = new Vector3(30, 60, 3);
+        private Vector2 _distanceFromTarget = new Vector2(30f, 15f);
         private readonly List<Drone> _dronesNotOnPositionYet = new List<Drone>();
         public List<Drone> dronesLost { get; } = new List<Drone>();
         private bool _needToCacheOnce = true;
@@ -31,7 +31,7 @@ namespace Swarm
         #region Constructor
 
         public void SwarmManagerConstructor(GameObject dronePrefab, int numberOfDrone, Vector3 targetPosition,
-            Vector3 distanceFromTarget, bool onStandByAfterSpawn = false)
+            Vector2 distanceFromTarget, bool onStandByAfterSpawn = false)
         {
             _dronePrefab = dronePrefab;
             _numberOfDrone = numberOfDrone;
@@ -214,7 +214,6 @@ namespace Swarm
                 drone.Destabilize();
             }
 
-            // state = GameState.Monitoring;
             state = GameState.OnTheWayIn;
         }
 

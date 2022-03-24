@@ -353,24 +353,29 @@ namespace Tests.PlayMode
                 UnityEngine.Object.Destroy(_gameObject);
             }
 
-            /*[UnityTest]
-            public IEnumerator Swarm_Doing_Turn_To_In_Position_For_2_Drone()
+        }
+
+        public class LayoutTesting
+        {
+            [UnityTest]
+            public IEnumerator Swarm_Arc_Calculate_N_Plus_One()
             {
+                var targetPosition = new Vector3(25f, 60, 0);
                 _gameObject = new GameObject();
                 _swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
-                if (_swarm == null) yield break;
-                _swarm.SwarmManagerConstructor(DronePrefab, 2, TargetPosition, 1);
-                yield return new WaitForSeconds(.8f);
-                var droneAngle0 = _swarm.drones[0].droneInstance.GetComponent<InputsHandler>().Yaw;
-                var droneAngle1 = _swarm.drones[1].droneInstance.GetComponent<InputsHandler>().Yaw;
+                if (_swarm != null)
+                    _swarm.SwarmManagerConstructor(DronePrefab, 1, targetPosition, distanceFromTarget);
 
-                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
-                yield return new WaitForSeconds(.8f);
-                AreEqual(60, droneAngle0);
-                AreEqual(-60, droneAngle1);
+                yield return new WaitUntil((() => _swarm.state == GameState.Monitoring));
+                yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
+                AreEqual(0f,
+                    _swarm.drones[0]
+                        .CalculateTargetPosition(1, targetPosition, new Vector2(10f, 15f), 6, LayoutType.Arc).z);
+
                 UnityEngine.Object.Destroy(_swarm);
                 UnityEngine.Object.Destroy(_gameObject);
-            }*/
+            }
         }
     }
 }
