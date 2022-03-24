@@ -22,8 +22,6 @@ public class SwitchCameras : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("start of switch camera");
-        // add the cameras
         _cameras.Add("playerCamera", _playerCamera);
         _cameras.Add("houseBeachCamera", _houseBeachCamera);
         _cameras.Add("boatCamera", _boatCamera);
@@ -43,7 +41,6 @@ public class SwitchCameras : MonoBehaviour
         _droneCount = _deployedSwarm.drones.Count;
         foreach (var drone in _deployedSwarm.drones)
         {
-            Debug.Log(drone.droneInstance.name);
             _cameras.Add(drone.droneInstance.name,
                 drone.droneInstance.GetComponentInChildren(typeof(CinemachineVirtualCamera)) as
                     CinemachineVirtualCamera);

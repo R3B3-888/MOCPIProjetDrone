@@ -11,7 +11,7 @@ namespace Drones
         private readonly DroneController _controller;
         public int id { get; }
         public GameObject droneInstance { get; }
-        public int rankInSwarm { get; set; }
+        public int rankInSwarm { get; set; } // correspond to index in SwarmManager.drones
 
         #endregion
 
@@ -79,6 +79,7 @@ namespace Drones
             Object.Destroy(droneInstance);
         }
 
+        public void UpdateRankInSwarm(int rank) => rankInSwarm = rank + 1;
 
     }
 }

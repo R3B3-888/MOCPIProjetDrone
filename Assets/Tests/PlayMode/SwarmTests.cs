@@ -143,6 +143,23 @@ namespace Tests.PlayMode
             }
 
             [UnityTest]
+            public IEnumerator Swarm_Crashing_Modify_Drones_Ranking_Positions()
+            {
+                yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);
+                for (var i = 0; i < _swarm.drones.Count; i++)
+                {
+                    AreEqual(i + 1, _swarm.drones[i].rankInSwarm);
+                }
+                _swarm.OnCrashing(3);
+                yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
+                for (var i = 0; i < _swarm.drones.Count; i++)
+                {
+                    AreEqual(i + 1, _swarm.drones[i].rankInSwarm);
+                }
+            }
+
+            [UnityTest]
             public IEnumerator Swarm_Crashing_Minus_1_At_DronesList()
             {
                 yield return new WaitUntil(() => _swarm.state == GameState.Monitoring);

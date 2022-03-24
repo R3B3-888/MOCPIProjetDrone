@@ -212,8 +212,12 @@ namespace Swarm
 
             drones.Remove(droneOnCrashing);
             _needToCacheOnce = true;
-            // foreach (var drone in drones)
-            //     drone.Destabilize();
+            foreach (var drone in drones)
+            {
+                drone.UpdateRankInSwarm(drones.IndexOf(drone));
+                // drone.Destabilize();
+            }
+
             state = GameState.Monitoring;
             // state = GameState.OnTheWayIn;
         }
@@ -222,9 +226,8 @@ namespace Swarm
 
         public void OnCrashing(int id)
         {
-
             if (dronesLost.Any(drone => drone.id == id)) return;
-            
+
             var droneToCrash = drones[id];
             foreach (var drone in drones.Where(drone => id == drone.id))
             {
