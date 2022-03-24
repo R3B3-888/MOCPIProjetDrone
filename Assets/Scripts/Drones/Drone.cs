@@ -6,21 +6,24 @@ namespace Drones
 {
     public class Drone
     {
+        #region Variables
+
         private readonly DroneController _controller;
-        public uint id { get; set; }
-
-        public Rigidbody rb { get; }
+        public int id { get; }
         public GameObject droneInstance { get; }
+        public int rankInSwarm { get; set; }
 
-        public Vector3 Position() => droneInstance.transform.position;
+        #endregion
 
-        public Drone(GameObject droneInstance, uint id)
+        #region Constructors
+
+        public Drone(GameObject droneInstance, int id)
         {
             this.id = id;
+            rankInSwarm = id + 1;
             droneInstance.name = $"Drone {id + 1}";
             this.droneInstance = droneInstance;
             _controller = droneInstance.GetComponent<DroneController>();
-            rb = droneInstance.GetComponent<Rigidbody>();
         }
 
         public Drone()
@@ -28,11 +31,19 @@ namespace Drones
             // Tests purpose
         }
 
+        #endregion
+
+        public Vector3 Position() => droneInstance.transform.position;
+        
         public void Stabilize() => _controller.Stabilize();
 
+        public void Destabilize() => _controller.Destabilize();
+        
+        public bool IsStillFlying() => _controller.enabled;
+        
         public void MoveTo(Vector3 pos) => _controller.MoveTo(pos);
 
-        public bool IsInRadiusOfWantedPosition() => _controller.IsInRadiusOfWantedPosition(radiusThreshold:1f);
+        public bool IsInRadiusOfWantedPosition() => _controller.IsInRadiusOfWantedPosition();
 
         public Vector3 CalculateTargetPosition(uint dronesCount, Vector3 baseTargetPosition,
             Vector3 distanceFromTarget, float distanceBetweenDrones = 1f, LayoutType layout = LayoutType.Line)
@@ -56,20 +67,19 @@ namespace Drones
             }
         }
 
-        public static float GetAngleFromIndex(uint index, uint n) => Mathf.PI + (index + 1) * Mathf.PI / (n + 1);
+        public static float GetAngleFromIndex(int index, uint n) => Mathf.PI + (index + 1) * Mathf.PI / (n + 1);
 
         public IEnumerator Crash()
         {
+            _controller.FallOff();
             _controller.enabled = false;
             droneInstance.GetComponent<InputsHandler>().enabled = false;
             droneInstance.GetComponent<PlayerInput>().enabled = false;
-            rb.drag = 3;
-            rb.angularDrag = 3;
             yield return new WaitForSeconds(6f);
             Object.Destroy(droneInstance);
         }
 
-        public bool IsStillFlying() => _controller.enabled;
+
     }
 }
 

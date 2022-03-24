@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Codice.CM.Client.Differences;
-using ICSharpCode.NRefactory.Ast;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Drones
 {
@@ -16,7 +10,7 @@ namespace Drones
         private Rigidbody _rb;
         private InputsHandler _inputsHandler;
         
-        public const float Threshold = .2f;
+        public const float Threshold = 1f;
 
         public Vector3 wantedPosition { get; private set; }
         public float wantedRotation { get; private set; }
@@ -81,9 +75,14 @@ namespace Drones
 
         public Vector3 GetDirection() => Vector3.Normalize(wantedPosition - transform.position);
 
-        public void Stabilize()
+        public void Stabilize() => _rb.drag = 25;
+
+        public void Destabilize() => _rb.drag = 1;
+
+        public void FallOff()
         {
-            _rb.drag = 25;
+            _rb.drag = 3;
+            _rb.angularDrag = 3;
         }
     }
 }

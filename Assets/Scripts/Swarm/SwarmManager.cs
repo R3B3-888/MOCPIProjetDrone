@@ -21,7 +21,7 @@ namespace Swarm
         private Vector3 _distanceFromTarget = new Vector3(30, 60, 3);
         private readonly List<Drone> _dronesNotOnPositionYet = new List<Drone>();
         public List<Drone> dronesLost { get; } = new List<Drone>();
-        private bool _onDeploy, _idHasBeenUpdated = false, _getComponentsOnce = true;
+        private bool _onDeploy, _idHasBeenUpdated = false, _needToCacheOnce = true;
 
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
@@ -90,7 +90,7 @@ namespace Swarm
         private void SpawnDrones()
         {
             var offset = -_numberOfDrone / 2;
-            for (uint i = 0; i < _numberOfDrone; i++)
+            for (var i = 0; i < _numberOfDrone; i++)
             {
                 var transform1 = transform;
                 var pos = transform1.position;
@@ -125,11 +125,11 @@ namespace Swarm
 
         private void HandleTakeOff()
         {
-            if (_getComponentsOnce)
+            if (_needToCacheOnce)
                 TakeOffDronesAt(_startingElevation);
             if (!drones.All(drone => drone.IsInRadiusOfWantedPosition())) return;
             state = GameState.OnTheWayIn;
-            _getComponentsOnce = true;
+            _needToCacheOnce = true;
         }
 
         private void TakeOffDronesAt(int elevation)
@@ -141,7 +141,7 @@ namespace Swarm
                 drone.MoveTo(pos);
             }
 
-            _getComponentsOnce = false;
+            _needToCacheOnce = false;
         }
 
         #endregion
@@ -150,7 +150,7 @@ namespace Swarm
 
         private void HandleOnTheWayIn()
         {
-            if (_getComponentsOnce)
+            if (_needToCacheOnce)
             {
                 foreach (var drone in drones)
                     _dronesNotOnPositionYet.Add(drone);
@@ -166,7 +166,7 @@ namespace Swarm
 
             if (_dronesNotOnPositionYet.Count != 0) return;
             state = GameState.Monitoring;
-            _getComponentsOnce = true;
+            _needToCacheOnce = true;
         }
 
         private void OnTheWayInDrones()
@@ -182,7 +182,7 @@ namespace Swarm
                         _layout
                     ));
 
-            _getComponentsOnce = false;
+            _needToCacheOnce = false;
         }
 
         #endregion
@@ -202,26 +202,37 @@ namespace Swarm
 
         private void HandleRepositioning()
         {
-            if (_idHasBeenUpdated is false)
+            Drone droneOnCrashing = null;
+            foreach (var drone in drones.Where(drone => !drone.IsStillFlying()))
             {
-                var idOfCrashDrone = 0;
-                foreach (var drone in drones.Where(drone => !drone.IsStillFlying()))
-                    idOfCrashDrone = (int) drone.id;
-                var droneLost = new Drone(drones[idOfCrashDrone].droneInstance, (uint) dronesLost.Count);
-                dronesLost.Add(droneLost);
-                drones.Remove(drones[idOfCrashDrone]);
-                foreach (var drone in drones)
-                    drone.id = (uint) drones.IndexOf(drone);
-                _idHasBeenUpdated = true;
+                dronesLost.Add(drone);
+                droneOnCrashing = drone;
+                break;
             }
+
+            drones.Remove(droneOnCrashing);
+            _needToCacheOnce = true;
+            // foreach (var drone in drones)
+            //     drone.Destabilize();
+            state = GameState.Monitoring;
+            // state = GameState.OnTheWayIn;
         }
 
         #endregion
 
         public void OnCrashing(int id)
         {
-            // TODO : check id if already crash drone
-            StartCoroutine(drones[id].Crash());
+
+            if (dronesLost.Any(drone => drone.id == id)) return;
+            
+            var droneToCrash = drones[id];
+            foreach (var drone in drones.Where(drone => id == drone.id))
+            {
+                droneToCrash = drone;
+                break;
+            }
+
+            StartCoroutine(droneToCrash.Crash());
 
             state = GameState.Repositioning;
         }
