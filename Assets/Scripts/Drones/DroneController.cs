@@ -24,15 +24,12 @@ namespace Drones
             _input = GetComponent<DroneInputs>();
             _rb = GetComponent<Rigidbody>();
             _inputsHandler = GetComponent<InputsHandler>();
-            wantedPosition = this.transform.position;
+            wantedPosition = transform.position;
         }
 
         private void Update()
         {
-            if (IsAtWantedRotation())
-                _input.Pedals = 0;
-            else
-                _input.Pedals = wantedRotation > _inputsHandler.Yaw ? 1 : -1;
+            _input.Pedals = IsAtWantedRotation() ? 0 : wantedRotation > _inputsHandler.Yaw ? 1 : -1;
 
 
             if (IsInRadiusOfWantedPosition())
@@ -46,12 +43,6 @@ namespace Drones
                 _input.Throttle = dir.y;
                 _input.Cyclic = new Vector2(dir.x, dir.z);
             }
-            // var t = Mathf.Lerp(0, 1f, Vector3.Distance(wantedPosition, transform.position)*.2f);
-            // _input.Throttle = GetDirection().y*t;
-
-            // Debug.Log(
-            //     $"pos {transform.position} wanted : {wantedPosition} Cyclic: {_input.Cyclic}"
-            //     + $" vel: {_rb.velocity}");
         }
 
         #endregion

@@ -110,14 +110,10 @@ namespace Swarm
 
         private void HandleStandby()
         {
-            if (_onStandbyAfterSpawn == false)
-                state = GameState.TakeOff;
-            // waiting for user to activate The deployment
-            if (_onDeploy)
-                state = GameState.TakeOff;
+            // Waiting for user raising OnDeploy
         }
 
-        public void OnDeploy() => _onDeploy = true;
+        public void OnDeploy() => state = GameState.TakeOff;
 
         #endregion
 

@@ -11,7 +11,7 @@ namespace Drones
         private readonly DroneController _controller;
         public int id { get; }
         public GameObject droneInstance { get; }
-        public int rankInSwarm { get; set; } // correspond to index in SwarmManager.drones
+        public int rankInSwarm { get; private set; } // correspond to index in SwarmManager.drones
 
         #endregion
 
