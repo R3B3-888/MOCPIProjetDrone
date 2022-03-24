@@ -276,21 +276,22 @@ namespace Tests.PlayMode
             [UnityTest]
             public IEnumerator Swarm_Doing_State_3_On_The_Way_In()
             {
+                var target = new Vector3(24f, 40, 0);
                 yield return new WaitUntil(() => _swarm.state == GameState.OnTheWayIn);
 
                 // We calculate the distance DronePosition <===> TargetPosition just at the begin of the new State
                 var distanceDroneToTargetBefore = new List<float>(NumberOfDrone);
                 distanceDroneToTargetBefore.AddRange(_swarm.drones.Select(drone =>
                     Vector3.Distance(drone.Position(), drone.CalculateTargetPosition(
-                        NumberOfDrone, TargetPosition, distanceFromTarget, 7))));
+                        NumberOfDrone, target, distanceFromTarget, NumberOfDrone + 1))));
 
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(1);
 
                 // We calculate the distance DronePosition <===> TargetPosition after 2 sec
                 var distanceDroneToTargetOnTheWayIn = new List<float>(NumberOfDrone);
                 distanceDroneToTargetOnTheWayIn.AddRange(_swarm.drones.Select(drone =>
                     Vector3.Distance(drone.Position(),
-                        drone.CalculateTargetPosition(NumberOfDrone, TargetPosition, distanceFromTarget, 7))));
+                        drone.CalculateTargetPosition(NumberOfDrone, target, distanceFromTarget, NumberOfDrone + 1))));
 
                 // We comparer the two list simultaneously 
                 foreach (var (d, dBefore) in distanceDroneToTargetBefore.Zip(
