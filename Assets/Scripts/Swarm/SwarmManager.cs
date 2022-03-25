@@ -21,7 +21,7 @@ namespace Swarm
         private Vector2 _distanceFromTarget = new Vector2(30f, 15f);
         private readonly List<Drone> _dronesNotOnPositionYet = new List<Drone>();
         public List<Drone> dronesLost { get; } = new List<Drone>();
-        private bool _needToCacheOnce = true;
+        private bool _needToCacheOnce = true, _needToCalibrateOnce = true;
 
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
@@ -149,7 +149,7 @@ namespace Swarm
             {
                 foreach (var drone in drones)
                     _dronesNotOnPositionYet.Add(drone);
-                OrderMoveToDrones();
+                DronesMoveToTheirOwnPosition();
             }
 
             foreach (var drone in drones)
@@ -164,15 +164,16 @@ namespace Swarm
             _needToCacheOnce = true;
         }
 
-        private void OrderMoveToDrones()
+        private void DronesMoveToTheirOwnPosition()
         {
             if (_swimmers != null) _targetPosition = _swimmers.position;
-            _targetPosition.z -= _layout == LayoutType.Line ? _areaLength / 2 : 0;
+            var targetPosition = new Vector3(_targetPosition.x, _targetPosition.y,
+                _targetPosition.z - (_layout == LayoutType.Line ? _areaLength / 2 : 0));
             foreach (var drone in drones)
                 drone.MoveTo(
                     drone.CalculateTargetPosition(
                         (uint) drones.Count,
-                        _targetPosition,
+                        targetPosition,
                         _distanceFromTarget,
                         _areaLength,
                         _layout
@@ -187,9 +188,14 @@ namespace Swarm
 
         private void HandleMonitoring()
         {
-            // TODO: foreach drone, TurnTowards target
-            // TODO: TargetCamera calculé par rapport à son index
-            // TODO: the camera surveillance   
+            if (_needToCalibrateOnce is false) return;
+            foreach (var drone in drones)
+                drone.CalibrateTargetCamera(targetPosition:
+                    new Vector3(
+                        _targetPosition.x,
+                        _targetPosition.y - _distanceFromTarget.y * .5f,
+                        _targetPosition.z));
+            _needToCalibrateOnce = false;
         }
 
         #endregion

@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Object = UnityEngine.Object;
 
 namespace Drones
 {
@@ -80,6 +82,9 @@ namespace Drones
         }
 
         public void UpdateRankInSwarm(int rank) => rankInSwarm = rank + 1;
+
+        public void CalibrateTargetCamera(Vector3 targetPosition) =>
+            droneInstance.transform.Find("DroneTarget").position = targetPosition;
     }
 }
 
