@@ -1,41 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DrowningDetection : MonoBehaviour
 {
-    public Text sliderValueText;
-    public Slider slider;
+    [SerializeField] private Text _sliderValue;
+    [SerializeField] private Slider _slider;
+    [SerializeField] private Text _totalDrownSwimmers;
+    [SerializeField] private Group _swimmers;
 
-    public Text valueText;
-    public Group swimmers;
-
-    private int drowningValue;
-
-    void Start()
-    {
-        drowningValue = swimmers.agents.Count;
-    }
-
-    void Update()
-    {
-        drowningValue = swimmers.agents.Count;
-    }
-
-    public void OnSliderChanged()
-    {
-        sliderValueText.text = slider.value.ToString();
-    }
+    public void OnSliderChanged() => _sliderValue.text = _slider.value.ToString();
 
     public void SendDrowningValue()
     {
-        swimmers.UpdateNbToDrown((int) slider.value);
-        swimmers.Drown();
+        _swimmers.UpdateNbToDrown((int) _slider.value);
+        _swimmers.Drown();
+        UpdateDrowningValue();
     }
 
-    public void UpdateDrowningValue()
-    {
-        valueText.text = drowningValue.ToString();
-    }
+    private void UpdateDrowningValue() => _totalDrownSwimmers.text = _swimmers.agents.Count.ToString();
 }
