@@ -25,6 +25,7 @@ namespace Swarm
 
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
+        public LayoutType layout => _layout;
 
         #endregion
 
@@ -38,6 +39,7 @@ namespace Swarm
             _targetPosition = targetPosition;
             _distanceFromTarget = distanceFromTarget;
             _onStandbyAfterSpawn = onStandByAfterSpawn;
+            _layout = LayoutType.Line;
         }
 
         #endregion
@@ -236,6 +238,8 @@ namespace Swarm
 
             state = GameState.Repositioning;
         }
+
+        public void OnChangingLayout(LayoutType layoutType) => _layout = layoutType;
     }
 }
 
