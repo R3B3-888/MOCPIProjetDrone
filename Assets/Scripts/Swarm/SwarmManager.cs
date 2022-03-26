@@ -10,19 +10,26 @@ namespace Swarm
     {
         #region Variables
 
+        // Drone Settings
         [SerializeField] private GameObject _dronePrefab;
-        [SerializeField, Range(1, 10)] private int _numberOfDrone = 5;
-        [SerializeField, Range(2, 20)] private int _startingElevation = 2;
-        [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
-        [SerializeField] private bool _onStandbyAfterSpawn;
-        [SerializeField] private Transform _swimmers;
+        [SerializeField, Range(1, 10)] private int _numberOfDrones = 5;
+
+        // Target Position params
         [SerializeField] private LayoutType _layout;
+        [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
+        [SerializeField] private Transform _targetSwimmers;
         [SerializeField] private float _areaLength = 60;
         private Vector2 _distanceFromTarget = new Vector2(30f, 15f);
+
+        // States params
+        [SerializeField, Range(2, 20)] private int _startingElevation = 2;
+        [SerializeField] private bool _onStandbyAfterSpawn;
+
+        // Optimizations locks
+        private bool _isMoveToNotDoneYet = true, _needToCalibrateOnce = true;
+
         private readonly List<Drone> _dronesNotOnPositionYet = new List<Drone>();
         public List<Drone> dronesLost { get; } = new List<Drone>();
-        private bool _needToCacheOnce = true, _needToCalibrateOnce = true;
-
         public List<Drone> drones { get; } = new List<Drone>();
         public GameState state { get; private set; }
         public LayoutType layout => _layout;
@@ -35,7 +42,7 @@ namespace Swarm
             Vector2 distanceFromTarget, bool onStandByAfterSpawn = false)
         {
             _dronePrefab = dronePrefab;
-            _numberOfDrone = numberOfDrone;
+            _numberOfDrones = numberOfDrone;
             _targetPosition = targetPosition;
             _distanceFromTarget = distanceFromTarget;
             _onStandbyAfterSpawn = onStandByAfterSpawn;
@@ -70,9 +77,8 @@ namespace Swarm
                 case GameState.Repositioning:
                     HandleRepositioning();
                     break;
-                case GameState.OnTheWayBack: // TODO
-                case GameState.Landing: // TODO
-                case GameState.Crashing: // TODO
+                case GameState.OnTheWayBack: // TODO : All drones rotate 180° and went back on platform
+                case GameState.Landing: // TODO : Like TakeOff by from elevation to platform ground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
@@ -90,8 +96,8 @@ namespace Swarm
 
         private void SpawnDrones()
         {
-            var offset = -_numberOfDrone / 2;
-            for (var i = 0; i < _numberOfDrone; i++)
+            var offset = -_numberOfDrones / 2;
+            for (var i = 0; i < _numberOfDrones; i++)
             {
                 var transform1 = transform;
                 var pos = transform1.position;
@@ -100,7 +106,7 @@ namespace Swarm
                     pos,
                     Quaternion.identity,
                     transform1);
-                var d = new Drone(droneInstance, i);
+                var d = new Drone(droneInstance, id: i);
                 drones.Add(d);
             }
         }
@@ -111,7 +117,7 @@ namespace Swarm
 
         private void HandleStandby()
         {
-            // Waiting for user raising OnDeploy
+            // Waiting for user to raise OnDeploy
         }
 
         public void OnDeploy() => state = GameState.TakeOff;
@@ -122,11 +128,16 @@ namespace Swarm
 
         private void HandleTakeOff()
         {
-            if (_needToCacheOnce)
+            if (_isMoveToNotDoneYet)
+            {
                 TakeOffDronesAt(_startingElevation);
+                _isMoveToNotDoneYet = false;
+            }
+
             if (!drones.All(drone => drone.IsInRadiusOfWantedPosition())) return;
+
+            _isMoveToNotDoneYet = true;
             state = GameState.OnTheWayIn;
-            _needToCacheOnce = true;
         }
 
         private void TakeOffDronesAt(int elevation)
@@ -137,8 +148,6 @@ namespace Swarm
                 pos.y += elevation;
                 drone.MoveTo(pos);
             }
-
-            _needToCacheOnce = false;
         }
 
         #endregion
@@ -147,11 +156,12 @@ namespace Swarm
 
         private void HandleOnTheWayIn()
         {
-            if (_needToCacheOnce)
+            if (_isMoveToNotDoneYet)
             {
                 foreach (var drone in drones)
                     _dronesNotOnPositionYet.Add(drone);
-                DronesMoveToTheirOwnPosition();
+                DronesMoveToTheirTargetPosition();
+                _isMoveToNotDoneYet = false;
             }
 
             foreach (var drone in drones)
@@ -161,17 +171,20 @@ namespace Swarm
                     _dronesNotOnPositionYet.Remove(drone);
                 }
 
-            if (_dronesNotOnPositionYet.Count != 0) return;
-            _needToCacheOnce = true;
+            if (_dronesNotOnPositionYet.Count != 0) return; // While all drone are not in position
+            _isMoveToNotDoneYet = true;
             _needToCalibrateOnce = true;
             state = GameState.Monitoring;
         }
 
-        private void DronesMoveToTheirOwnPosition()
+        private void DronesMoveToTheirTargetPosition()
         {
-            if (_swimmers != null) _targetPosition = _swimmers.position;
+            if (_targetSwimmers != null) _targetPosition = _targetSwimmers.position;
+
+            // TRICKY : offset on z axis for the calculation of the line layout
             var targetPosition = new Vector3(_targetPosition.x, _targetPosition.y,
                 _targetPosition.z - (_layout == LayoutType.Line ? _areaLength / 2 : 0));
+
             foreach (var drone in drones)
                 drone.MoveTo(
                     drone.CalculateTargetPosition(
@@ -181,8 +194,6 @@ namespace Swarm
                         _areaLength,
                         _layout
                     ));
-
-            _needToCacheOnce = false;
         }
 
         #endregion
@@ -207,6 +218,16 @@ namespace Swarm
 
         private void HandleRepositioning()
         {
+            CrasherManager();
+
+            foreach (var drone in drones)
+                drone.Destabilize();
+
+            state = GameState.OnTheWayIn;
+        }
+
+        private void CrasherManager()
+        {
             Drone droneOnCrashing = null;
             foreach (var drone in drones.Where(drone => !drone.IsStillFlying()))
             {
@@ -215,21 +236,12 @@ namespace Swarm
                 break;
             }
 
-            if (droneOnCrashing != null)
-            {
-                drones.Remove(droneOnCrashing);
-                _needToCacheOnce = true;
-                foreach (var drone in drones)
-                {
-                    drone.UpdateRankInSwarm(drones.IndexOf(drone));
-                }
-            }
-
+            if (droneOnCrashing == null) return;
+            drones.Remove(droneOnCrashing);
+            
+            _isMoveToNotDoneYet = true;
             foreach (var drone in drones)
-            {
-                drone.Destabilize();
-            }
-            state = GameState.OnTheWayIn;
+                drone.UpdateRankInSwarm(drones.IndexOf(drone));
         }
 
         #endregion
@@ -265,6 +277,5 @@ public enum GameState
     Monitoring = 4,
     OnTheWayBack = 5,
     Landing = 6,
-    Crashing = 7,
-    Repositioning = 8
+    Repositioning = 7
 }
