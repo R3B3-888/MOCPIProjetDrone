@@ -162,8 +162,9 @@ namespace Swarm
                 }
 
             if (_dronesNotOnPositionYet.Count != 0) return;
-            state = GameState.Monitoring;
             _needToCacheOnce = true;
+            _needToCalibrateOnce = true;
+            state = GameState.Monitoring;
         }
 
         private void DronesMoveToTheirOwnPosition()
@@ -214,14 +215,20 @@ namespace Swarm
                 break;
             }
 
-            drones.Remove(droneOnCrashing);
-            _needToCacheOnce = true;
-            foreach (var drone in drones)
+            if (droneOnCrashing != null)
             {
-                drone.UpdateRankInSwarm(drones.IndexOf(drone));
-                drone.Destabilize();
+                drones.Remove(droneOnCrashing);
+                _needToCacheOnce = true;
+                foreach (var drone in drones)
+                {
+                    drone.UpdateRankInSwarm(drones.IndexOf(drone));
+                }
             }
 
+            foreach (var drone in drones)
+            {
+                drone.Destabilize();
+            }
             state = GameState.OnTheWayIn;
         }
 
@@ -239,7 +246,12 @@ namespace Swarm
             state = GameState.Repositioning;
         }
 
-        public void OnChangingLayout(LayoutType layoutType) => _layout = layoutType;
+        public void OnChangingLayout(int layoutTypeIndex)
+        {
+            _layout = (LayoutType) layoutTypeIndex;
+            if (state == GameState.Standby || state == GameState.SpawningDrones) return;
+            state = GameState.Repositioning;
+        }
     }
 }
 

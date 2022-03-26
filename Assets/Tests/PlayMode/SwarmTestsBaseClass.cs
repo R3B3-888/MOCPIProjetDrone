@@ -37,7 +37,8 @@ namespace Tests.PlayMode
         }
     }
 
-    public class LayoutTests : SwarmTestsBaseClass
+    // TODO : Rewrite all LayoutType Tests
+    public class LayoutTypeTests : SwarmTestsBaseClass
     {
         [UnitySetUp]
         public IEnumerator LayoutTestsSetUp()
@@ -45,7 +46,7 @@ namespace Tests.PlayMode
             TargetPosition = new Vector3(25f, 60, 0);
             Swarm = _gameObject.AddComponent(typeof(SwarmManager)) as SwarmManager;
             if (Swarm != null)
-                Swarm.SwarmManagerConstructor(DronePrefab, 1, TargetPosition, DistanceFromTarget);
+                Swarm.SwarmManagerConstructor(DronePrefab, 2, TargetPosition, DistanceFromTarget);
             yield return new WaitUntil((() => Swarm.state == GameState.Monitoring));
         }
 
@@ -54,28 +55,55 @@ namespace Tests.PlayMode
         {
             UnityEngine.Object.Destroy(Swarm);
         }
-
-
-        [UnityTest]
-        public IEnumerator Swarm_Arc_Calculate_N_Plus_One()
-        {
-            yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
-            if (Swarm != null)
-            {
-                AreEqual(0f,
-                    Swarm.drones[0]
-                        .CalculateTargetPosition(1, TargetPosition, new Vector2(10f, 15f), 6, LayoutType.Arc).z);
-            }
-        }
-
+        
         [UnityTest]
         public IEnumerator Set_Layout_Type()
         {
-            Swarm.OnChangingLayout(LayoutType.Line);
+            Swarm.OnChangingLayout((int) LayoutType.Line);
             AreEqual(LayoutType.Line, Swarm.layout);
-            Swarm.OnChangingLayout(LayoutType.Arc);
+            Swarm.OnChangingLayout((int) LayoutType.Arc);
             AreEqual(LayoutType.Arc, Swarm.layout);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CalculateTargetPosition_Arc_Compare_To_Reached_Position()
+        {
+            // TODO
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator CalculateTargetPosition_Line_Compare_To_Reached_Position()
+        {
+            // TODO
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator Arc_To_Line_Layout_In_Monitoring()
+        {
+            Swarm.OnChangingLayout((int) LayoutType.Arc);
+            yield return new WaitUntil(() => Swarm.state == GameState.Monitoring);
+
+            AreEqual(Swarm.drones[0].droneInstance.transform.position,
+                Swarm.drones[0].CalculateTargetPosition(2, TargetPosition, new Vector2(1f, 1f), 3));
+            AreEqual(Swarm.drones[1].Position(),
+                Swarm.drones[1].CalculateTargetPosition(2, TargetPosition, new Vector2(1f, 1f), 3));
+
+            Swarm.OnChangingLayout((int) LayoutType.Line);
+            yield return new WaitUntil(() => Swarm.state == GameState.Monitoring);
+
+            AreEqual(Swarm.drones[0].Position(),
+                Swarm.drones[0].CalculateTargetPosition(2, TargetPosition, new Vector2(1f, 1f), 3));
+            AreEqual(Swarm.drones[1].Position(),
+                Swarm.drones[1].CalculateTargetPosition(2, TargetPosition, new Vector2(1f, 1f), 3));
+        }
+
+        [UnityTest]
+        public IEnumerator Line_To_Arc_In_Monitoring()
+        {
+            // TODO
             yield return null;
         }
     }
@@ -260,10 +288,10 @@ namespace Tests.PlayMode
         public void AfterMonitoringTestsTearDown() => UnityEngine.Object.Destroy(Swarm);
     }
 
-    internal class HandleMonitoringMethod : AfterMonitoringTests
+    internal class CamerasStuff : AfterMonitoringTests
     {
         [UnityTest]
-        public IEnumerator Drone_Target_Cameras_Equals_Target_Position()
+        public IEnumerator Drone_Calibrate_Target_Camera()
         {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
@@ -279,9 +307,8 @@ namespace Tests.PlayMode
     internal class DroneCrashingMethods : AfterMonitoringTests
     {
         [UnityTest]
-        public IEnumerator Swarm_Drone_Crashing_Disappearing_During_Monitoring()
+        public IEnumerator Drone_Crash_Fall_And_Disappear()
         {
-            yield return new WaitForSeconds(1);
             var droneYBeforeCrash = Swarm.drones[0].droneInstance.transform.position.y;
             Swarm.OnCrashing(0);
             yield return new WaitForSeconds(1);
@@ -292,16 +319,13 @@ namespace Tests.PlayMode
         }
 
         [Test]
-        public void Drone_Testing_Flying()
+        public void Drone_Crash_Is_not_Flying()
         {
             var drone = Swarm.drones[3];
             Swarm.OnCrashing(3);
             False(drone.IsStillFlying());
         }
-    }
 
-    internal class SwarmRepositioning : AfterMonitoringTests
-    {
         [UnityTest]
         public IEnumerator Swarm_Cant_Crash_Same_Drone_Id()
         {
@@ -318,17 +342,13 @@ namespace Tests.PlayMode
         public IEnumerator Swarm_Crashing_Modify_Drones_Ranking_Positions()
         {
             for (var i = 0; i < Swarm.drones.Count; i++)
-            {
                 AreEqual(i + 1, Swarm.drones[i].rankInSwarm);
-            }
 
             Swarm.OnCrashing(3);
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             for (var i = 0; i < Swarm.drones.Count; i++)
-            {
                 AreEqual(i + 1, Swarm.drones[i].rankInSwarm);
-            }
         }
 
         [UnityTest]
@@ -349,7 +369,7 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Swarm_Crashing_Checking_Drones_Staying_In_Swarm_GameObject()
+        public IEnumerator Swarm_Crashing_Drone_Not_Staying_In_Swarm_GameObject()
         {
             Swarm.OnCrashing(3);
             yield return new WaitForEndOfFrame();
@@ -387,7 +407,7 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator Swarm_Repositioning_To_On_The_Way_In()
+        public IEnumerator Swarm_Crash_Repositioning_To_On_The_Way_In()
         {
             Swarm.OnCrashing(3);
             yield return new WaitForEndOfFrame();

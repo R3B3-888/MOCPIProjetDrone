@@ -90,6 +90,6 @@ namespace Drones
 
 public enum LayoutType
 {
-    Line,
-    Arc
+    Line = 0,
+    Arc = 1
 }
