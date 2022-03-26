@@ -120,7 +120,11 @@ namespace Swarm
             // Waiting for user to raise OnDeploy
         }
 
-        public void OnDeploy() => state = GameState.TakeOff;
+        public void OnDeploy()
+        {
+            if (state == GameState.Standby)
+                state = GameState.TakeOff;
+        }
 
         #endregion
 
