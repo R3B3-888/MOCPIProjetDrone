@@ -218,7 +218,7 @@ namespace Swarm
 
         private void HandleRepositioning()
         {
-            CrasherManager();
+            CrashManager();
 
             foreach (var drone in drones)
                 drone.Destabilize();
@@ -226,7 +226,7 @@ namespace Swarm
             state = GameState.OnTheWayIn;
         }
 
-        private void CrasherManager()
+        private void CrashManager()
         {
             Drone droneOnCrashing = null;
             foreach (var drone in drones.Where(drone => !drone.IsStillFlying()))
@@ -246,6 +246,8 @@ namespace Swarm
 
         #endregion
 
+        #region Event Methods
+
         // Warning !! : id != index of drones list
         // id is equal to a drone.id
         public void OnCrashing(int id)
@@ -261,9 +263,11 @@ namespace Swarm
         public void OnChangingLayout(int layoutTypeIndex)
         {
             _layout = (LayoutType) layoutTypeIndex;
-            if (state == GameState.Standby || state == GameState.SpawningDrones) return;
+            if (state is GameState.Standby or GameState.SpawningDrones) return;
             state = GameState.Repositioning;
         }
+
+        #endregion
     }
 }
 
