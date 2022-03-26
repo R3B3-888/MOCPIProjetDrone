@@ -263,7 +263,7 @@ namespace Swarm
         public void OnChangingLayout(int layoutTypeIndex)
         {
             _layout = (LayoutType) layoutTypeIndex;
-            if (state is GameState.Standby or GameState.SpawningDrones) return;
+            if (state == GameState.Standby || state == GameState.SpawningDrones) return;
             state = GameState.Repositioning;
         }
 
