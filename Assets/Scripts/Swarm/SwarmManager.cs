@@ -14,6 +14,8 @@ namespace Swarm
         [SerializeField] private GameObject _dronePrefab;
         [SerializeField, Range(1, 10)] private int _numberOfDrones = 5;
 
+        [SerializeField] private RenderTexture[] _renderTextures;
+
         // Target Position params
         [SerializeField] private LayoutType _layout;
         [SerializeField] private Vector3 _targetPosition = new Vector3(725, 60, 500);
@@ -91,6 +93,7 @@ namespace Swarm
         private void HandleSpawningDrones()
         {
             SpawnDrones();
+            LinkDronesRenderTextures();
             state = !_onStandbyAfterSpawn ? GameState.TakeOff : GameState.Standby;
         }
 
@@ -111,6 +114,14 @@ namespace Swarm
             }
         }
 
+        private void LinkDronesRenderTextures()
+        {
+            for(var i = 0; i < drones.Count; i++)
+            {
+                drones[i].SetCamOutputWith(_renderTextures[i]);
+            }
+        }
+        
         #endregion
 
         #region GameState.Standby
@@ -120,7 +131,11 @@ namespace Swarm
             // Waiting for user to raise OnDeploy
         }
 
-        public void OnDeploy() => state = GameState.TakeOff;
+        public void OnDeploy()
+        {
+            if (state == GameState.Standby)
+                state = GameState.TakeOff;
+        }
 
         #endregion
 

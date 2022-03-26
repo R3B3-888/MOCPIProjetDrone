@@ -85,6 +85,10 @@ namespace Drones
 
         public void CalibrateTargetCamera(Vector3 targetPosition) =>
             droneInstance.transform.Find("DroneTarget").position = targetPosition;
+
+        public void SetCamOutputWith(RenderTexture renderTexture) =>
+            droneInstance.transform.Find("CMDroneCamera").GetComponentInChildren<Camera>().targetTexture =
+                renderTexture;
     }
 }
 
