@@ -44,7 +44,7 @@ Installation:
 
 ## Télécharger l'exécutable
 
-Vous trouverez l'exécutable à ce lien: (expire le XX/04/2022)
+Vous trouverez l'exécutable à ce lien: (expire le 27/04/2022)
 
 > [lien de l'exécutable](https://filesender.renater.fr/?s=download&token=893e9fe0-4bb0-438c-bd26-ddb4e34ae9d7)
 
@@ -68,5 +68,12 @@ Vous trouverez le rapport dans le dossier **Rapport**, il explique le sujet ains
 
 > ---
 
-## À propos de l'UE MOCPI
+## À propos du concours drone encadré par MOCPI
 
+Dans cette UE Concours drone / MOCPI (Méthodes, Outils, Conduite de projets, Informatiques), nous avons réalisé ce projet de surveillance de baignades à partir d'une méthode agile "Scrum".
+
+Le but était de monter un projet de zéro à partir d'une idée trouvée en groupe réduit sur la thématique du drone (en 2 mois).
+
+Faisant parti du Master ASPIC (Autonomous, System, Perception, Interaction, Control), notre attention s'est très vite portée sur l'essaim autonome.
+
+Cette UE a été encadré par Dr. P. Desbarats et Dr. S. Chaumette
