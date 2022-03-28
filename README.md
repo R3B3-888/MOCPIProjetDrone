@@ -1,101 +1,72 @@
-# MOCPIProjetDrone
-
-## Surveillance de plage à l'aide d'un essaim de drones autonomes
+# MOCPIProjetDrone - Surveillance de plage à l'aide d'un essaim de drones autonomes
 
 * Etat du projet: prototype
 * Université de Brdeaux - Master ASPIC
 
-L'application développée au sein de l'UE MOCPI, est une application de surveillance de plage à l'ai de d'un essaim de drones autonomes.
-Elle simule le déploiement de cet essaim par une équipe de maîtres nageurs, un maître nageur gérant le déploiement sur la plage et une potentielle équipe de maîtres nageurs située dans un poste de secours.
-L'application a été simulé avec l'environnement de développement Unity3D afin de présenter ses particularités dans un environnement se rapprochant de la réalité.
+## Résumé
+
+    L'application développée au sein de l'UE MOCPI, est une application de surveillance de plage à l'aide d'un essaim de drones autonomes.
+
+    Elle simule le déploiement de cet essaim par une équipe de maîtres nageurs, un maître nageur gérant le déploiement sur la plage et une potentielle équipe de maîtres nageurs située dans un poste de secours.
+
+    L'application a été simulé avec l'environnement de développement Unity3D afin de présenter ses particularités dans un environnement se rapprochant de la réalité.
+
+## Documentation
 
 
-## Table des matières
+* [Installation (Développeur)](#installation-développeur)
 
-> * [Title / Repository Name](#title--repository-name)
->   * [About / Synopsis](#about--synopsis)
->   * [Table of contents](#table-of-contents)
->   * [Installation](#installation)
->   * [Usage](#usage)
->     * [Screenshots](#screenshots)
->     * [Features](#features)
->   * [Code](#code)
->     * [Content](#content)
->     * [Requirements](#requirements)
->     * [Limitations](#limitations)
->     * [Build](#build)
->     * [Deploy (how to install build product)](#deploy-how-to-install-build-product)
->   * [Resources (Documentation and other links)](#resources-documentation-and-other-links)
->   * [Contributing / Reporting issues](#contributing--reporting-issues)
->   * [License](#license)
->   * [About Nuxeo](#about-nuxeo)
+* [Télécharger l'exécutable](#télécharger-lexécutable)
 
-## Installation
+* [Bugs rencontrés](#bugs-rencontrés)
 
-Sample:
+* [Rapport du projet](#rapport-du-projet)
 
-* From the Nuxeo Marketplace: install [the Sample Nuxeo Package](https://connect.nuxeo.com/nuxeo/site/marketplace/package/nuxeo-sample).
-* From the command line: `nuxeoctl mp-install nuxeo-sample`
+* [Questions posées](#questions-posées)
 
-## Usage
+* [À propos de l'UE MOCPI](#à-propos-de-lue-mocpi)
 
-### Screenshots
 
-### Features
 
-## Code
+## Installation (Développeur)
 
-[![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=/nuxeo/addons_nuxeo-sample-project-master)](https://qa.nuxeo.org/jenkins/job/nuxeo/job/addons_nuxeo-sample-project-master/)
+Prérequis:
 
-### Content
+> * Compte Unity3D
+> * UnityHub
 
-Description, sub-modules organization...
+Installation:
 
-### Requirements
+> * Cloner le projet dans un dossier temporaire.
+> * Depuis le menu d'UnityHub, créer un nouveau projet **Scène 3D (URP)**
+> * Fermer Unity, puis déplacer les fichiers clonés précédemment dans le nouveau projet créé.
+> * Nettoyer les dossiers que vous ne voulez pas garder dans l'appliaction (cf. la scène d'exemple).
 
-See [CORG/Compiling Nuxeo from sources](http://doc.nuxeo.com/x/xION)
+## Télécharger l'exécutable
 
-Sample: <https://github.com/nuxeo/nuxeo/blob/master/nuxeo-distribution/README.md>
+Vous trouverez l'exécutable à ce lien: (expire le XX/04/2022)
 
-### Limitations
+> [lien de l'exécutable](https://filesender.renater.fr/?s=download&token=893e9fe0-4bb0-438c-bd26-ddb4e34ae9d7)
 
-Sample: <https://github.com/nuxeo-archives/nuxeo-features/tree/master/nuxeo-elasticsearch>
+**Note**: Une fois le lien expiré, vous pourrez toujours créer l'exécutable à partir du clone du projet (cf. [installation](#installation-développeur))
 
-### Build
+## Bugs rencontrés
 
-    mvn clean install
+> Un des bugs que l'on a rencontré lors du travail en distanciel a été le changement entre les différentes installations (différents pc).
+>
+> Le projet ne chargeait pas toutes les textures, ou certains "packages" ajoutés avec Unity n'étaient pas suivis.
+>
+>> Solution trouvée:
+>> * Sauvegarder les modifications faites au préalable
+>> * Réinstaller le projet depuis l'étape [installation](#installation-développeur)
 
-Build options:
+## Rapport du projet
 
-* ...
+Vous trouverez le rapport dans le dossier **Rapport**, il explique le sujet ainsi que les étapes de développement que nous avons suivi lors de sa réalisation.
 
-### Deploy (how to install build product)
+## Questions posées
 
-Direct to MP package if any. Otherwise provide steps to deploy on Nuxeo Platform:
+> ---
 
- > Copy the built artifacts into `$NUXEO_HOME/templates/custom/bundles/` and activate the `custom` template.
+## À propos de l'UE MOCPI
 
-## Resources (Documentation and other links)
-
-## Contributing / Reporting issues
-
-Link to JIRA component (or project if there is no component for that project). Samples:
-
-* [Link to component](https://jira.nuxeo.com/issues/?jql=project%20%3D%20NXP%20AND%20component%20%3D%20Elasticsearch%20AND%20Status%20!%3D%20%22Resolved%22%20ORDER%20BY%20updated%20DESC%2C%20priority%20DESC%2C%20created%20ASC)
-* [Link to project](https://jira.nuxeo.com/secure/CreateIssue!default.jspa?project=NXP)
-
-## License
-
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
-
-## About Nuxeo
-
-Nuxeo Platform is an open source Content Services platform, written in Java. Data can be stored in both SQL & NoSQL databases.
-
-The development of the Nuxeo Platform is mostly done by Nuxeo employees with an open development model.
-
-The source code, documentation, roadmap, issue tracker, testing, benchmarks are all public.
-
-Typically, Nuxeo users build different types of information management solutions for [document management](https://www.nuxeo.com/solutions/document-management/), [case management](https://www.nuxeo.com/solutions/case-management/), and [digital asset management](https://www.nuxeo.com/solutions/dam-digital-asset-management/), use cases. It uses schema-flexible metadata & content models that allows content to be repurposed to fulfill future use cases.
-
-More information is available at [www.nuxeo.com](https://www.nuxeo.com).
