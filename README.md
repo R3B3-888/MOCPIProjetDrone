@@ -1,20 +1,16 @@
 # MOCPIProjetDrone
 
-## About / Synopsis
+## Surveillance de plage à l'aide d'un essaim de drones autonomes
 
-* What is it, what does it do / Abstract
-* Project status: working/prototype
-* Nuxeo Support
+* Etat du projet: prototype
+* Université de Brdeaux - Master ASPIC
 
-See real examples:
+L'application développée au sein de l'UE MOCPI, est une application de surveillance de plage à l'ai de d'un essaim de drones autonomes.
+Elle simule le déploiement de cet essaim par une équipe de maîtres nageurs, un maître nageur gérant le déploiement sur la plage et une potentielle équipe de maîtres nageurs située dans un poste de secours.
+L'application a été simulé avec l'environnement de développement Unity3D afin de présenter ses particularités dans un environnement se rapprochant de la réalité.
 
-* <https://github.com/nuxeo/nuxeo/blob/master/README.md>
-* <https://github.com/nuxeo/nuxeo-drive/blob/master/README.md>
-* <https://github.com/nuxeo/nuxeo-sdk-ios/blob/master/README.md>
 
-## Table of contents
-
-Use for instance <https://github.com/ekalinin/github-markdown-toc>:
+## Table des matières
 
 > * [Title / Repository Name](#title--repository-name)
 >   * [About / Synopsis](#about--synopsis)
